@@ -7,6 +7,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # Security settings
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'ag85$1x(+1()%4d@&+nf!37vgk!5%^v(mdbl69o9s=v_ulrj7c')
 
+AUTH_USER_MODEL = 'api.CustomUser'
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -19,7 +21,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'debugpy',
-    'api',
+    'api'
 ]
 
 MIDDLEWARE = [

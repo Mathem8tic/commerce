@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Message, Address
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from api.models import CustomUser
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -28,19 +29,19 @@ class UserSerializer(serializers.ModelSerializer):
     messages = MessageSerializer(many=True, read_only=True)
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username', 'email', 'first_name', 'last_name', 'addresses', 'messages']
 
 class RegisterSerializer(serializers.ModelSerializer):
     addresses = AddressSerializer(many=True)
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username', 'password', 'email', 'addresses']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
+        user = CustomUser.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
         return user
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

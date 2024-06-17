@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User
-from .models import Address, Message
+from .models import Address, Message, CustomUser
+
 
 class AddressInline(admin.TabularInline):
     model = Address
@@ -16,10 +16,26 @@ class UserAdmin(BaseUserAdmin):
     inlines = (AddressInline, MessageInline)
 
 # Unregister the default User admin
-admin.site.unregister(User)
+# admin.site.unregister(CustomUser)
 
 # Register the customized User admin
-admin.site.register(User, UserAdmin)
+
+class CustomUserAdmin(UserAdmin):
+    model = CustomUser
+    list_display = ['id', 'username', 'email', 'is_staff', 'is_active']
+    search_fields = ['username', 'email']
+    readonly_fields = ['id']
+
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'email')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+    )
+
+admin.site.register(CustomUser, CustomUserAdmin)
+
+
 
 class AddressAdmin(admin.ModelAdmin):
     list_display = ('user', 'street', 'city', 'state', 'postal_code', 'country')

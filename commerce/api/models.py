@@ -1,8 +1,18 @@
+import uuid
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
-class Message(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='messages', null=True, blank=True)
+class BaseModel(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    class Meta:
+        abstract = True
+
+class CustomUser(AbstractUser, BaseModel):
+    pass
+
+class Message(BaseModel):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='messages', null=True, blank=True)
     title = models.CharField(max_length=100)
     content = models.TextField()
     email_address = models.EmailField(max_length=254, blank=True, null=True)
@@ -12,8 +22,8 @@ class Message(models.Model):
     def __str__(self):
         return f"Message from {self.user.username if self.user else 'Anonymous'} at {self.created_at}"
 
-class Address(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
+class Address(BaseModel):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='addresses')
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)

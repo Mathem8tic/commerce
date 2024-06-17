@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, Observable, tap, throwError } from 'rxjs';
 import { LoadingDialogComponent } from '../components/loading-dialog/loading-dialog.component';
 import { AuthService } from '../auth/auth.service';
 import { environment } from '../../environments/environment';
@@ -24,16 +24,21 @@ export interface Message {
 export class MessageService {
   private apiUrl = environment.apiUrl + 'messages/';
 
+  private messages = new BehaviorSubject<Message[]>([]);
+  messages$ = this.messages.asObservable();
+
   constructor(private http: HttpClient, private snackBar: MatSnackBar, private dialog: MatDialog, private authService: AuthService) {}
 
-  getMessages(): Observable<Message[]> {
+  getMessages(): void {
     const dialogRef = this.dialog.open(LoadingDialogComponent, {
       disableClose: true
     });
-    return this.http.get<Message[]>(this.apiUrl).pipe(
+    this.http.get<Message[]>(this.apiUrl).pipe(
       catchError(this.handleError),
       finalize(() => dialogRef.close())
-    );
+    ).subscribe(messages => {
+      this.messages.next(messages);
+    });
   }
 
   createMessage(message: Message): Observable<Message> {
@@ -43,7 +48,7 @@ export class MessageService {
     return this.http.post<Message>(this.apiUrl, message).pipe(
       tap(() => this.showNotification('Message created successfully')),
       catchError(this.handleError),
-      finalize(() => dialogRef.close())
+      finalize(() => [dialogRef.close(), this.getMessages()])
     );
   }
 

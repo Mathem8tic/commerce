@@ -26,12 +26,12 @@ import { Subscription } from 'rxjs';
         query(':enter', [
           style({ opacity: 0, transform: 'translateY(-20px)' }),
           stagger('100ms', [
-            animate('500ms ease-in', style({ opacity: 1, transform: 'translateY(0)' }))
+            animate('1000ms ease-in', style({ opacity: 1, transform: 'translateY(0)' }))
           ])
         ], { optional: true }),
         query(':leave', [
           stagger('100ms', [
-            animate('500ms ease-out', style({ opacity: 0, transform: 'translateY(20px)' }))
+            animate('1000ms ease-out', style({ opacity: 0, transform: 'translateY(20px)' }))
           ])
         ], { optional: true })
       ])
@@ -47,7 +47,12 @@ export class MessageListComponent implements OnDestroy {
   constructor(private messageService: MessageService, public dialog: MatDialog, public authService: AuthService, private router: Router, private cd: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.getMessages();
+
+    this.messageService.messages$.subscribe(messages => {
+      this.messages = messages;
+    });
+
+    this.messageService.getMessages();
 
     this.navigationSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
@@ -60,9 +65,7 @@ export class MessageListComponent implements OnDestroy {
   }
 
   getMessages(): void {
-    this.messageService.getMessages().subscribe((data: Message[]) => {
-      this.messages = data;
-    });
+    this.messageService.getMessages();
   }
 
   deleteMessage(id: number): void {
