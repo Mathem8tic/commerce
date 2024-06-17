@@ -6,7 +6,7 @@ services:
     volumes:
       - ./commerce:/app
     environment:
-      DJANGO_SETTINGS_MODULE: commerce.settings.production
+      DJANGO_SETTINGS_MODULE: settings.production
     ports:
       - "8000:8000"
     depends_on:

@@ -2,15 +2,15 @@ services:
   django:
     build:
       context: ./commerce
-      dockerfile: ./Dockerfile.django
+      dockerfile: ../Dockerfile.django
     volumes:
-      - ./commerce:/app
+      - ./commerce:/app:delegated
     environment:
-      - DJANGO_SETTINGS_MODULE=commerce.settings.development
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      DJANGO_SETTINGS_MODULE: commerce.settings.development
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
     ports:
       - "8001:8000"
     depends_on:
@@ -19,9 +19,9 @@ services:
   angular:
     build:
       context: ./client
-      dockerfile: ./Dockerfile.angular
+      dockerfile: ../Dockerfile.angular
     volumes:
-      - ./client:/app
+      - ./client:/app:delegated
     ports:
       - "4200:4200"
     environment:
