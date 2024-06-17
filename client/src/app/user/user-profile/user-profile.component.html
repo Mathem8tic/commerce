@@ -1,0 +1,53 @@
+<div class="responsive-padding">
+  <div fxLayout="column" fxLayoutAlign="center center">
+    <div class="user-profile">
+      <mat-card>
+        <ng-template #loading>
+          <!-- <div style="padding:32px"> -->
+          <!-- <mat-progress-spinner mode="indeterminate"></mat-progress-spinner> -->
+          <!-- </div> -->
+        </ng-template>
+        <ng-container *ngIf="user; else loading">
+          <mat-card-header>
+            <mat-card-title
+              >{{ user.first_name }} {{ user.last_name }}</mat-card-title
+            >
+            <mat-card-subtitle
+              ><span class="subtitle-opacity"
+                >{{ user.username }} &mdash; {{ user.email }}</span
+              ></mat-card-subtitle
+            >
+          </mat-card-header>
+          <br />
+          <mat-divider></mat-divider>
+          <br />
+          <mat-card-content>
+            <h4>Addresses</h4>
+            <mat-list role="list">
+              <mat-list-item *ngFor="let address of user.addresses">
+                <mat-icon matListItemIcon>home</mat-icon>
+                <div matListItemTitle>{{ address.street }}</div>
+                <div matListItemLine>
+                  {{ address.city }}, {{ address.state }},
+                  {{ address.postal_code }}, {{ address.country }}
+                </div>
+              </mat-list-item>
+            </mat-list>
+
+            <h4>Messages</h4>
+            <mat-list role="list">
+              <mat-list-item *ngFor="let message of user.messages">
+                <mat-icon matListItemIcon>message</mat-icon>
+                <div matListItemTitle>{{ message.title }}</div>
+                <div matListItemLine>{{ message.content }}</div>
+                <div matListItemLine class="subtitle-opacity">
+                  {{ message.created_at | date : "short" }}
+                </div>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </ng-container>
+      </mat-card>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<h1 mat-dialog-title>{{ data.message ? "Edit Message" : "Send a Message to Kari" }}</h1>
+<div mat-dialog-content>
+  <br />
+  <form
+    [formGroup]="messageForm"
+    (ngSubmit)="onSubmit()"
+    fxLayout="column"
+    fxLayoutGap="8px"
+  >
+    <div>
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" required />
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Content</mat-label>
+        <textarea matInput rows="6" formControlName="content" required></textarea>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email_address" />
+        <mat-error
+          *ngIf="messageForm.get('email_address')?.hasError('required')"
+        >
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="messageForm.get('email_address')?.hasError('email')">
+          Enter a valid email
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phone" />
+        <mat-error *ngIf="messageForm.get('phone')?.hasError('required')">
+          Phone is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onSubmit()" [disabled]="!messageForm.valid">
+    {{ data.message ? "Update" : "Create" }}
+  </button>
+</div>

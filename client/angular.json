@@ -32,7 +32,9 @@
               }
             ],
             "styles": [
-              "src/styles.sass"
+              "node_modules/@angular/material/prebuilt-themes/azure-blue.css",
+              "src/styles.sass",
+              "node_modules/swiper/swiper-bundle.min.css"
             ],
             "scripts": [],
             "server": "src/main.server.ts",
@@ -43,6 +45,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -96,7 +104,9 @@
               }
             ],
             "styles": [
-              "src/styles.sass"
+              "src/styles.sass",
+              "node_modules/@angular/material/prebuilt-themes/azure-blue.css",
+              "node_modules/swiper/swiper-bundle.min.css"
             ],
             "scripts": []
           }

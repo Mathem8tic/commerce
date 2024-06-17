@@ -1,13 +1,129 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { LoginDialogComponent } from './auth/login-dialog/login-dialog.component';
+import { MessageListComponent } from './message/message-list/message-list.component';
+import { RegisterDialogComponent } from './auth/register-dialog/register-dialog.component';
+import { AuthService } from './auth/auth.service';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatMenuModule } from '@angular/material/menu';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { MessageDialogComponent } from './message/message-dialog/message-dialog.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [
+    RouterOutlet,
+    CommonModule,
+    MessageListComponent,
+    MatDialogModule,
+    RouterModule,
+    MatButtonModule,
+    MatListModule,
+    MatMenuModule,
+    MatSidenavModule,
+    FlexLayoutModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatDividerModule,
+  ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.sass'
+  styleUrl: './app.component.sass',
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'client';
+  isLoggedIn: boolean = false;
+
+  mobileQuery: MediaQueryList;
+  private _mobileQueryListener: () => void;
+
+  constructor(
+    public dialog: MatDialog,
+    private authService: AuthService,
+    changeDetectorRef: ChangeDetectorRef,
+    media: MediaMatcher,
+    private cd: ChangeDetectorRef,
+    private router: Router
+  ) {
+    this.mobileQuery = media.matchMedia('(max-width: 600px)');
+    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+
+    if (this.mobileQuery.addEventListener) {
+      this.mobileQuery.addEventListener('change', this._mobileQueryListener);
+    } else {
+      this.mobileQuery.addListener(this._mobileQueryListener);
+    }
+  }
+
+  ngOnInit(): void {
+    this.authService.authState$.subscribe((loggedIn: boolean) => {
+      this.isLoggedIn = loggedIn;
+    });
+  }
+
+  refreshToken() {
+    this.authService.refreshToken().subscribe((res) => {});
+  }
+
+  openLoginDialog(): void {
+    this.dialog.open(LoginDialogComponent, {
+      width: '300px',
+    });
+  }
+
+  openRegisterDialog(): void {
+    const dialogRef = this.dialog.open(RegisterDialogComponent, {
+      width: '300px',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('User registered successfully');
+      }
+    });
+  }
+
+  openCreateMessageDialog(): void {
+    const dialogRef = this.dialog.open(MessageDialogComponent, {
+      width: '600px',
+      data: { message: null },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+      }
+    });
+  }
+
+  logout(): void {
+    this.authService.logout();
+    console.log('User logged out');
+  }
+
+  ngOnDestroy() {}
 }
+
+export const treatments = [
+  {
+    image: 'img/friends-discount-speakers.webp',
+    title: 'Speaker Packages',
+    subtitle: 'Get that big sound you have been searching for',
+    content:
+      'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. ',
+  },
+  {
+    image: 'img/friends-discount-old-television.webp',
+    title: 'Television Packages',
+    subtitle: 'Is it time for an upgrade?',
+    content:
+      'Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?',
+  },
+];

@@ -1,9 +1,37 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, PLATFORM_ID, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { JwtInterceptor } from './interceptors/jwt.interceptor';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ReactiveFormsModule } from '@angular/forms';
+// import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { FlexLayoutServerModule } from '@angular/flex-layout/server';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { isPlatformServer } from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideClientHydration()]
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    provideClientHydration(),
+    provideAnimationsAsync(),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([
+        JwtInterceptor.intercept
+      ])),
+    importProvidersFrom(
+      isPlatformServer(PLATFORM_ID) ? FlexLayoutServerModule : FlexLayoutModule
+    ),
+    MatDialogModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+    ReactiveFormsModule
+  ],
 };

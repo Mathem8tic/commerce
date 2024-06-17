@@ -1,0 +1,33 @@
+<div class="title">
+  <div>Friends Discount</div>
+</div>
+
+<div class="bottom-right">
+  <div class="badge">
+    We're here to help!<br /><span>If you have any questions&hellip;</span>
+  </div>
+  <div class="headshot" (click)="openCreateMessageDialog()">
+    <img
+      src="img/kari-harris-rock-psychology-edmonton.webp"
+      alt="Kari Harris Headshot"
+    />
+  </div>
+</div>
+<swiper-container
+  class="swiper-container"
+  loop="true"
+  navigation
+  pagination
+  autoplay-delay="3000"
+  autoplay-disable-on-interaction="true"
+  speed="1000"
+>
+  <swiper-slide *ngFor="let slide of treatments" class="swiper-slide">
+    <img [src]="slide.image" alt="Slide Image" />
+    <div class="overlay">
+      <h2>{{ slide.title }}</h2>
+      <p class="subtitle">{{ slide.subtitle }}</p>
+      <p>{{ slide.content }}</p>
+    </div>
+  </swiper-slide>
+</swiper-container>

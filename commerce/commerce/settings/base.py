@@ -19,7 +19,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'debugpy',
-    'commerce',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +62,7 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-ROOT_URLCONF = 'commerce.urls'
+ROOT_URLCONF = 'api.urls'
 
 TEMPLATES = [
     {

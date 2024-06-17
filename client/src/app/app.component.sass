@@ -1,0 +1,50 @@
+.container
+    height: 100vh
+
+    .toolbar
+        position: fixed
+        top: 0
+        left: 0
+        right: 0
+        z-index: 1000
+        height: 64px
+        
+
+    mat-sidenav-content
+        padding-top: 64px
+
+        .content
+            height: calc(100vh - 64px)
+            overflow-y: auto
+            background: rgba(0,0,0,0.1)
+
+    @media (max-width: 960px)
+        .toolbar
+            height: 56px
+
+        mat-sidenav-content
+            padding-top: 56px
+
+            .content
+                height: calc(100vh - 56px)
+
+    @media (max-width: 600px)
+        .toolbar
+            height: 48px
+
+        mat-sidenav-content
+            padding-top: 48px
+
+            .content
+                height: calc(100vh - 48px)
+
+.is-mobile .toolbar
+    position: fixed
+    z-index: 2
+
+.navigation
+    .active
+        background: rgba(0,0,0,0.1)
+
+.no-overflow
+    overflow: hidden

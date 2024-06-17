@@ -1,0 +1,68 @@
+<div class="responsive-padding" fxLayout="column" fxLayoutGap="16px">
+  <h2>Messages</h2>
+  <div fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="end center">
+    <div>
+      <button mat-icon-button (click)="getMessages()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+  <ng-container *ngIf="showMessages">
+    <div
+      [@staggeredFadeIn]="messages.length"
+      fxLayout="column"
+      fxLayoutGap="32px"
+    >
+      <mat-card *ngFor="let message of messages" class="message-card" fxFlex>
+        <mat-card-header>
+          <mat-card-subtitle
+            ><span class="subtitle-opacity">{{
+              message.created_at | date
+            }}</span></mat-card-subtitle
+          >
+          <mat-card-title>{{ message.title }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="mat-body-large">{{ message.content }}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <div
+            fxLayout="row"
+            fxLayoutGap="8px"
+            fxLayoutAlign="end center"
+            fxFlex
+          >
+            <div>
+              <button
+                mat-icon-button
+                [matMenuTriggerFor]="menu"
+                aria-label="Message options button"
+              >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="openEditDialog(message)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+                </button>
+                <button
+                  color="warn"
+                  mat-menu-item
+                  *ngIf="message.id && authService.isAdmin()"
+                  (click)="deleteMessage(message.id)"
+                >
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+              </mat-menu>
+            </div>
+          </div>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </ng-container>
+</div>
+
+<div class="fab">
+  <button mat-fab (click)="openCreateDialog()"><mat-icon>add</mat-icon></button>
+</div>
