@@ -5,6 +5,8 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../../environments/environment';
 import { isPlatformBrowser } from '@angular/common';
+import { RegisterDialogComponent } from './register-dialog/register-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 export interface AuthResponse {
   access: string;
@@ -27,6 +29,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
+    private dialog: MatDialog,
     private cookieService: CookieService,
     @Inject(PLATFORM_ID) private platformId: any
   ) {}
@@ -107,6 +110,19 @@ export class AuthService {
     }
     return false;
   }
+
+  openRegisterDialog(): void {
+    const dialogRef = this.dialog.open(RegisterDialogComponent, {
+      width: '300px',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('User registered successfully');
+      }
+    });
+  }
+
 
   private setSession(authResult: AuthResponse): void {
     const expiresIn = 60 * 120; // 1 hour

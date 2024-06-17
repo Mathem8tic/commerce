@@ -1,9 +1,16 @@
+#!/usr/bin/env python
 import os
 import sys
+# import debugpy
 
-def main():
-    """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'commerce.settings.development')
+if __name__ == '__main__':
+    # Only enable debugpy in development mode
+    # if os.environ.get('DJANGO_SETTINGS_MODULE') == 'commerce.settings.development':
+    #     debugpy.listen(("0.0.0.0", 5678))
+    #     print("Waiting for debugger attach...")
+    #     debugpy.wait_for_client()
+        
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api.settings.development')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -13,6 +20,3 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
-
-if __name__ == '__main__':
-    main()

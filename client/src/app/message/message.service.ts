@@ -6,6 +6,8 @@ import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 import { LoadingDialogComponent } from '../components/loading-dialog/loading-dialog.component';
 import { AuthService } from '../auth/auth.service';
 import { environment } from '../../environments/environment';
+import { MessageDialogComponent } from './message-dialog/message-dialog.component';
+import { RegisterDialogComponent } from '../auth/register-dialog/register-dialog.component';
 
 export interface Message {
   id?: number | undefined;
@@ -65,6 +67,36 @@ export class MessageService {
       catchError(this.handleError),
       finalize(() => dialogRef.close())
     );
+  }
+
+  openCreateDialog(): void {
+    const dialogRef = this.dialog.open(MessageDialogComponent, {
+      width: '600px',
+      data: { message: null }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.snackBar.open('Message created', 'Close', {
+          duration: 3000,
+        });
+      }
+    });
+  }
+
+  openEditDialog(message: Message): void {
+    const dialogRef = this.dialog.open(MessageDialogComponent, {
+      width: '600px',
+      data: { message }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && message.id) {
+        this.snackBar.open('Message updated', 'Close', {
+          duration: 3000,
+        });
+      }
+    });
   }
 
   private handleError(error: HttpErrorResponse) {

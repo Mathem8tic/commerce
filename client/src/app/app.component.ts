@@ -16,6 +16,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatMenuModule } from '@angular/material/menu';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { MessageDialogComponent } from './message/message-dialog/message-dialog.component';
+import { MessageService } from './message/message.service';
 
 @Component({
   selector: 'app-root',
@@ -50,8 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher,
-    private cd: ChangeDetectorRef,
-    private router: Router
+    private messageService: MessageService
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
@@ -80,27 +80,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   openRegisterDialog(): void {
-    const dialogRef = this.dialog.open(RegisterDialogComponent, {
-      width: '300px',
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        console.log('User registered successfully');
-      }
-    });
+    this.authService.openRegisterDialog();
   }
 
   openCreateMessageDialog(): void {
-    const dialogRef = this.dialog.open(MessageDialogComponent, {
-      width: '600px',
-      data: { message: null },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-      }
-    });
+    this.messageService.openCreateDialog();
   }
 
   logout(): void {

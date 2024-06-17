@@ -62,7 +62,7 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-ROOT_URLCONF = 'api.urls'
+ROOT_URLCONF = 'commerce.urls'
 
 TEMPLATES = [
     {

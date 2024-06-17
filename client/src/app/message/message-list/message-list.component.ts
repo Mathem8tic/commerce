@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+
+import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { Message, MessageService } from '../message.service';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,24 +21,25 @@ import { Subscription } from 'rxjs';
   templateUrl: './message-list.component.html',
   styleUrls: ['./message-list.component.sass'],
   animations: [
-    trigger('staggeredFadeIn', [
+    trigger('staggeredSlideInOut', [
       transition('* => *', [
-        query('.message-card', [
+        query(':enter', [
           style({ opacity: 0, transform: 'translateY(-20px)' }),
           stagger('100ms', [
             animate('500ms ease-in', style({ opacity: 1, transform: 'translateY(0)' }))
           ])
         ], { optional: true }),
-      ]),
-      transition(':leave', [
-        query('.message-card', [
-          animate('0ms', style({ opacity: 0, transform: 'translateY(20px)' }))
-        ])
+        query(':leave', [
+          stagger('100ms', [
+            animate('500ms ease-out', style({ opacity: 0, transform: 'translateY(20px)' }))
+          ])
+        ], { optional: true })
       ])
     ])
   ]
 })
-export class MessageListComponent {
+
+export class MessageListComponent implements OnDestroy {
   messages: Message[] = [];
   showMessages = true;
   private navigationSubscription: Subscription | undefined;
@@ -70,32 +72,14 @@ export class MessageListComponent {
   }
 
   openCreateDialog(): void {
-    const dialogRef = this.dialog.open(MessageDialogComponent, {
-      width: '600px',
-      data: { message: null }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.messageService.createMessage(result).subscribe(() => {
-          this.getMessages();
-        });
-      }
-    });
+    this.messageService.openCreateDialog();
   }
 
   openEditDialog(message: Message): void {
-    const dialogRef = this.dialog.open(MessageDialogComponent, {
-      width: '600px',
-      data: { message }
-    });
+    this.messageService.openEditDialog(message)
+  }
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && message.id) {
-        this.messageService.updateMessage(message.id, result).subscribe(() => {
-          this.getMessages();
-        });
-      }
-    });
+  ngOnDestroy(): void {
+    this.navigationSubscription?.unsubscribe();
   }
 }
