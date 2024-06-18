@@ -9,7 +9,7 @@ class AddressInline(admin.TabularInline):
 
 class MessageInline(admin.TabularInline):
     model = Message
-    extra = 0  # Number of extra forms to show
+    extra = 0
     fields = ('title','content')
 
 class UserAdmin(BaseUserAdmin):
@@ -19,7 +19,6 @@ class UserAdmin(BaseUserAdmin):
 # admin.site.unregister(CustomUser)
 
 # Register the customized User admin
-
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = ['id', 'username', 'email', 'is_staff', 'is_active']
@@ -34,8 +33,6 @@ class CustomUserAdmin(UserAdmin):
     )
 
 admin.site.register(CustomUser, CustomUserAdmin)
-
-
 
 class AddressAdmin(admin.ModelAdmin):
     list_display = ('user', 'street', 'city', 'state', 'postal_code', 'country')

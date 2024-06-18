@@ -8,16 +8,21 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.core.mail import send_mail
 import logging
 
-from .models import Message
+from .models import Message, Address
 from .serializers import (
     RegisterSerializer,
     CustomTokenObtainPairSerializer,
     UserSerializer,
+    AddressSerializer,
     CreateMessageSerializer,
     MessageSerializer,
 )
 
 logger = logging.getLogger(__name__)
+
+class AddressViewSet(viewsets.ModelViewSet):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
@@ -75,6 +80,7 @@ class UserProfileView(APIView):
         user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data)
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer

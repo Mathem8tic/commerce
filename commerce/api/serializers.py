@@ -1,13 +1,16 @@
 from rest_framework import serializers
-from .models import Message, Address
-# from django.contrib.auth.models import User
-from api.models import CustomUser
+from .models import Message, Address, CustomUser
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['id', 'title', 'content', 'user', 'email_address', 'phone', 'created_at']
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ['id', 'street', 'city', 'state', 'zip']
 
 class CreateMessageSerializer(serializers.ModelSerializer):
     class Meta:
