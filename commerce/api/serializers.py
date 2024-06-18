@@ -1,31 +1,39 @@
 from rest_framework import serializers
-from .models import Message, Address, CustomUser
+from .models import Message, Address, Conversation, CustomUser
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class MessageSerializer(serializers.ModelSerializer):
+    sender = serializers.StringRelatedField(read_only=True)
+
     class Meta:
         model = Message
-        fields = ['id', 'title', 'content', 'user', 'email_address', 'phone', 'created_at']
+        fields = ['id', 'conversation', 'sender', 'content', 'created_at']
 
 class AddressSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    
     class Meta:
         model = Address
-        fields = ['id', 'street', 'city', 'state', 'zip']
+        fields = ['id', 'street', 'city', 'state', 'postal_code', 'country', 'type', 'is_primary_shipping', 'is_primary_billing', 'user']
+        read_only_fields = ['user', 'id']
+
+class ConversationSerializer(serializers.ModelSerializer):
+    messages = MessageSerializer(many=True, read_only=True)
+    participants = serializers.StringRelatedField(many=True, read_only=True)
+
+    class Meta:
+        model = Conversation
+        fields = ['id', 'title', 'email_address', 'phone', 'participants', 'messages', 'created_at', 'updated_at']
 
 class CreateMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ['title','content', 'email_address', 'phone']
+        fields = ['content']
 
     def create(self, validated_data):
         user = self.context['request'].user
         validated_data['user'] = user if user.is_authenticated else None
         return super().create(validated_data)
-
-class AddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Address
-        fields = ['street', 'city', 'state', 'postal_code', 'country']
 
 class UserSerializer(serializers.ModelSerializer):
     addresses = AddressSerializer(many=True, read_only=True)

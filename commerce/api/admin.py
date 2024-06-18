@@ -41,7 +41,8 @@ class AddressAdmin(admin.ModelAdmin):
 admin.site.register(Address, AddressAdmin)
 
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ('user', 'title', 'content')
-    search_fields = ('user__username', 'title', 'content')
+    list_display = ('id', 'user', 'content', 'created_at', 'conversation')
+    search_fields = ('user__username', 'content', 'conversation__title')
+    list_filter = ('created_at',)
     
 admin.site.register(Message, MessageAdmin)

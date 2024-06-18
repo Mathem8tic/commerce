@@ -1,0 +1,40 @@
+<div class="chat-container">
+    <mat-toolbar color="primary">
+      <img mat-icon src="https://www.gravatar.com/avatar/HASH" alt="User Avatar" class="user-avatar" />
+      <div class="header-info">
+        <div class="user-email">mattharris.pro</div>
+      </div>
+      <span class="spacer"></span>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>
+          <mat-icon>settings</mat-icon>
+          <span>Settings</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>info</mat-icon>
+          <span>About</span>
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+  
+    <app-chat-selector></app-chat-selector>
+  
+    <app-chat-dialog [messages]="selectedConversation?.messages"></app-chat-dialog>
+  
+    <div class="input-container">
+      <form [formGroup]="messageForm" (ngSubmit)="sendMessage()">
+        <div class="input-row">
+          <button mat-icon-button color="primary" type="submit">
+            <mat-icon>add</mat-icon>
+          </button>
+          <textarea class="chat-input" matInput formControlName="content"></textarea>
+          <button mat-icon-button color="primary" type="submit">
+            <mat-icon>send</mat-icon>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>

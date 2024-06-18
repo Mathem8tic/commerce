@@ -17,6 +17,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { MessageDialogComponent } from './message/message-dialog/message-dialog.component';
 import { MessageService } from './message/message.service';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { ChatBottomSheetComponent } from './message/chat-bottom-sheet/chat-bottom-sheet.component';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-root',
@@ -50,6 +53,8 @@ export class AppComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private authService: AuthService,
     changeDetectorRef: ChangeDetectorRef,
+    private bottomSheet: MatBottomSheet,
+    private cookieService: CookieService,
     media: MediaMatcher,
     private messageService: MessageService
   ) {
@@ -90,6 +95,14 @@ export class AppComponent implements OnInit, OnDestroy {
   logout(): void {
     this.authService.logout();
     console.log('User logged out');
+  }
+
+  openChat() {
+    const conversationId = this.cookieService.get('conversation_id');
+
+    this.bottomSheet.open(ChatBottomSheetComponent, {
+      data: { conversationId }
+    });
   }
 
   ngOnDestroy() {}

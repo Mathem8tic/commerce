@@ -33,10 +33,10 @@ export class MessageDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: { message: Message }
   ) {
     this.messageForm = this.fb.group({
-      title: [data.message ? data.message.title : '', Validators.required],
+      // title: [data.message ? data.message.title : '', Validators.required],
       content: [data.message ? data.message.content : '', Validators.required],
-      email_address: [data.message?.email_address ? data.message.email_address : '', [Validators.required, Validators.email]],
-      phone: [data.message?.phone ? data.message.phone: '', Validators.required]
+      // email_address: [data.message?.email_address ? data.message.email_address : '', [Validators.required, Validators.email]],
+      // phone: [data.message?.phone ? data.message.phone: '', Validators.required]
     });
   }
 

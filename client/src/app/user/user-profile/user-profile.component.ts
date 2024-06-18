@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { UserService } from '../user.service';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser, NgIf } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
@@ -10,7 +10,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { Address } from 'cluster';
 import { AddressDialogComponent } from '../../address/address-dialog/address-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-user-profile',
@@ -19,13 +21,16 @@ import { MatButtonModule } from '@angular/material/button';
   standalone: true,
   imports: [
     CommonModule,
+    NgIf,
     MatCardModule,
     FlexLayoutModule,
     MatListModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
+    MatDividerModule,
     MatIconModule,
-    MatButtonModule
+    MatChipsModule,
+    MatButtonModule,
   ],
 })
 export class UserProfileComponent implements OnInit {
@@ -57,10 +62,10 @@ export class UserProfileComponent implements OnInit {
 
   openAddressDialog(address?: Address) {
     const dialogRef = this.dialog.open(AddressDialogComponent, {
-      data: { address: address || null }
+      data: { address: address || null },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // this.loadAddresses();
       }

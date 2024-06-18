@@ -43,6 +43,12 @@
             fxLayoutGap="16px"
           >
             <button
+              mat-raised-button
+              (click)="openChat()"
+            >
+              Open Chat
+            </button>
+            <button
               mat-icon-button
               (click)="openCreateMessageDialog()"
               aria-label="Create message button"

@@ -7,20 +7,25 @@
     fxLayout="column"
     fxLayoutGap="8px"
   >
-    <div>
+    <!-- <div>
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Title</mat-label>
         <input matInput formControlName="title" required />
       </mat-form-field>
-    </div>
+    </div> -->
 
     <div>
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Content</mat-label>
-        <textarea matInput rows="6" formControlName="content" required></textarea>
+        <textarea
+          matInput
+          rows="6"
+          formControlName="content"
+          required
+        ></textarea>
       </mat-form-field>
     </div>
-    <div>
+    <!-- <div>
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Email</mat-label>
         <input matInput formControlName="email_address" />
@@ -33,8 +38,8 @@
           Enter a valid email
         </mat-error>
       </mat-form-field>
-    </div>
-    <div>
+    </div> -->
+    <!-- <div>
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Phone</mat-label>
         <input matInput formControlName="phone" />
@@ -42,7 +47,7 @@
           Phone is required
         </mat-error>
       </mat-form-field>
-    </div>
+    </div> -->
   </form>
 </div>
 <div mat-dialog-actions>

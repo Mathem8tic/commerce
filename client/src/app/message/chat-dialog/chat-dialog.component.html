@@ -1,0 +1,16 @@
+<div class="message-container">
+  <mat-list *ngIf="messages">
+    <mat-list-item *ngFor="let message of messages">
+      <mat-card
+        class="message-card"
+        [ngClass]="{
+          sent: message.sender === 'Me',
+          received: message.sender !== 'Me'
+        }"
+      >
+        <div class="message-text">{{ message.content }}</div>
+        <div class="message-sender">{{ message.sender }}</div>
+      </mat-card>
+    </mat-list-item>
+  </mat-list>
+</div>

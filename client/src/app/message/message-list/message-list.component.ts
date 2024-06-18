@@ -52,7 +52,7 @@ export class MessageListComponent implements OnDestroy {
       this.messages = messages;
     });
 
-    this.messageService.getMessages();
+    // this.messageService.getMessages();
 
     this.navigationSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
@@ -65,10 +65,10 @@ export class MessageListComponent implements OnDestroy {
   }
 
   getMessages(): void {
-    this.messageService.getMessages();
+    // this.messageService.getMessages();
   }
 
-  deleteMessage(id: number): void {
+  deleteMessage(id: string): void {
     this.messageService.deleteMessage(id).subscribe(() => {
       this.getMessages();
     });
