@@ -68,10 +68,12 @@ export class ChatBottomSheetComponent implements OnInit, OnDestroy {
   setupSockets() {
     if (this.selectedConversation) {
       this.websocketService.connect(this.selectedConversation.id);
-      this.wsSubscription = this.websocketService.onMessage().subscribe((message: Message) => {
-        console.log('incoming',message);
-        this.messageService.handleIncomingMessage(message);
-      });
+      this.wsSubscription = this.websocketService
+        .onMessage()
+        .subscribe((message: any) => {
+          console.log('incoming message: ', message);
+          this.messageService.handleIncomingMessage(message.message);
+        });
     }
   }
 
@@ -100,7 +102,13 @@ export class ChatBottomSheetComponent implements OnInit, OnDestroy {
         conversation_id: this.selectedConversation.id,
       };
 
-      this.websocketService.sendMessage(message);
+      this.websocketService.sendMessage({
+        message: {
+          content,
+          conversation_id: this.selectedConversation.id,
+        },
+      });
+
       this.messageForm.reset();
     }
   }

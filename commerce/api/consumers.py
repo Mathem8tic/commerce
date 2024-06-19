@@ -2,7 +2,7 @@ import json
 import logging
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-from .models import Message, Conversation
+from .models import Message, Conversation, CustomUser
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +27,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
+        logger.info(f'Received data: {text_data}')
+
         text_data_json = json.loads(text_data)
         message = text_data_json.get('message', None)
 
@@ -34,7 +36,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             message_data = {
                 'content': message['content'],
                 'conversation_id': self.room_name,
-                'user': self.scope['user']
+                'user_id': self.scope['user'].id
             }
 
             logger.info(f'Received message: {message_data}')
@@ -64,8 +66,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def save_message(self, message_data):
         logger.info(f'Saving message to database: {message_data}')
         conversation = Conversation.objects.get(id=message_data['conversation_id'])
+        user = CustomUser.objects.get(id=message_data['user_id'])
         Message.objects.create(
             conversation=conversation,
-            user=message_data['user'],
+            user=user,
             content=message_data['content']
         )
