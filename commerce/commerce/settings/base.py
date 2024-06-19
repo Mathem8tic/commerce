@@ -1,4 +1,5 @@
 import os
+import logging.config
 from pathlib import Path
 
 # Base directory of the project
@@ -8,6 +9,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'ag85$1x(+1()%4d@&+nf!37vgk!5%^v(mdbl69o9s=v_ulrj7c')
 
 AUTH_USER_MODEL = 'api.CustomUser'
+
+ASGI_APPLICATION = 'commerce.settings.asgi.application'
+WSGI_APPLICATION = 'commerce.wsgi.application'
 
 # Application definition
 INSTALLED_APPS = [
@@ -21,20 +25,21 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'debugpy',
+    'channels',
     'api'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
-
+    
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -44,6 +49,15 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+}
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [("redis", 6379)],
+        },
+    },
 }
 
 from datetime import timedelta
@@ -86,8 +100,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'commerce.wsgi.application'
 
 # Database settings
 DATABASES = {
@@ -135,3 +147,26 @@ EMAIL_HOST = 'smtp-relay.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'noreply@friendsdiscount.ca'
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',  # Set to INFO to reduce logging output
+        },
+        'django.utils.autoreload': {
+            'handlers': ['console'],
+            'level': 'INFO',  # Set to INFO to suppress DEBUG messages
+            'propagate': False,
+        },
+    },
+}

@@ -3,11 +3,11 @@ from .models import Message, Address, Conversation, CustomUser
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class MessageSerializer(serializers.ModelSerializer):
-    sender = serializers.StringRelatedField(read_only=True)
+    username = serializers.StringRelatedField(source='user.username', read_only=True)
 
     class Meta:
         model = Message
-        fields = ['id', 'conversation', 'sender', 'content', 'created_at']
+        fields = ['id', 'conversation', 'username', 'content', 'created_at']
 
 class AddressSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()

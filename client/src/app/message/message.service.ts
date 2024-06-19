@@ -143,6 +143,11 @@ export class MessageService {
       );
   }
 
+  handleIncomingMessage(message: Message) {
+    const currentMessages = this.messages.getValue();
+    this.messages.next([...currentMessages, message]);
+  }
+
   openCreateDialog(): void {
     const dialogRef = this.dialog.open(MessageDialogComponent, {
       width: '600px',
@@ -186,11 +191,11 @@ export class MessageService {
   }
 }
 export interface Message {
-  id?: string;
+  id?: string | null;
   conversation_id: string;
   content: string;
   created_at?: string;
-  sender?: string;
+  username?: string;
 }
 
 export interface Conversation {

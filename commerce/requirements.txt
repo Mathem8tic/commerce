@@ -3,4 +3,8 @@ djangorestframework
 psycopg2-binary
 django-cors-headers
 djangorestframework-simplejwt
+channels
+channels_redis
 debugpy
+daphne
+psycopg2-binary

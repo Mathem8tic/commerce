@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { Message } from '../message.service';
+import { Observable } from 'rxjs';
 
 export interface ChatMessage {
-  sender: string;
-  text: string;
+  username: string;
+  content: string;
   timestamp: Date;
 }
 
@@ -18,5 +19,5 @@ export interface ChatMessage {
   imports: [CommonModule, MatCardModule, MatListModule]
 })
 export class ChatDialogComponent {
-  @Input() messages: Message[] | undefined = [];
+  @Input() messages$!: Observable<Message[]>;
 }

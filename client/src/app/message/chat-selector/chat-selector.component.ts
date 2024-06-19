@@ -4,6 +4,7 @@ import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { Conversation, MessageService } from '../message.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-chat-selector',
@@ -14,14 +15,17 @@ import { Conversation, MessageService } from '../message.service';
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatSelectModule
-  ]
+    MatSelectModule,
+  ],
 })
 export class ChatSelectorComponent implements OnInit {
   conversations: Conversation[] = [];
   conversationControl = new FormControl();
 
-  constructor(private messageService: MessageService) {}
+  constructor(
+    private messageService: MessageService,
+    private cookieService: CookieService
+  ) {}
 
   ngOnInit(): void {
     this.messageService.getUserConversations();
@@ -32,6 +36,7 @@ export class ChatSelectorComponent implements OnInit {
 
   onConversationChange(event: MatSelectChange): void {
     const selectedConversation = event.value;
+    this.cookieService.set('conversation_id', event.value.id);
     this.messageService.setSelectedConversation(selectedConversation);
   }
 }

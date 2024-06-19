@@ -1,4 +1,4 @@
-<div class="responsive-padding">
+<div class="responsive-padding" *ngIf="user">
   <div fxLayout="column" fxLayoutAlign="center center">
     <div class="user-profile" fxLayout="column" fxLayoutGap="32px">
       <mat-card>
@@ -9,7 +9,7 @@
         <!-- </ng-template> -->
         <!-- <ng-container *ngIf="user; else loading"> -->
         <mat-card-header>
-          <mat-card-title
+          <mat-card-title *ngIf="user"
             >{{ user.first_name }} {{ user.last_name }}</mat-card-title
           >
           <mat-card-subtitle

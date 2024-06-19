@@ -10,7 +10,7 @@ if __name__ == '__main__':
     #     print("Waiting for debugger attach...")
     #     debugpy.wait_for_client()
         
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api.settings.development')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'commerce.settings.development')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

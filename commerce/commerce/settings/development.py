@@ -4,7 +4,15 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # Static files (CSS, JavaScript, Images)
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_URL = '/static/'
+
+# The directory where `collectstatic` will collect static files for deployment.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Additional locations of static files
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 # Database settings
 DATABASES = {

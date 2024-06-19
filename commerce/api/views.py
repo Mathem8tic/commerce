@@ -56,7 +56,9 @@ class ConversationViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
     def my_conversations(self, request):
         user = request.user
+        logger.info(f"Fetching conversations for user: {user.id} - {user.username}")
         conversations = Conversation.objects.filter(participants=user)
+        logger.info(f"Conversations found for user {user.username}: {conversations.count()}")
         serializer = self.get_serializer(conversations, many=True)
         return Response(serializer.data)
 

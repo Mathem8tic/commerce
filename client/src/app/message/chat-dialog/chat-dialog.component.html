@@ -1,15 +1,15 @@
 <div class="message-container">
-  <mat-list *ngIf="messages">
-    <mat-list-item *ngFor="let message of messages">
+  <mat-list *ngIf="messages$ | async as messages">
+    <mat-list-item *ngFor="let message of messages" class="mat-mdc-list-item">
       <mat-card
         class="message-card"
         [ngClass]="{
-          sent: message.sender === 'Me',
-          received: message.sender !== 'Me'
+          sent: message.username === 'admin',
+          received: message.username !== 'admin'
         }"
       >
-        <div class="message-text">{{ message.content }}</div>
-        <div class="message-sender">{{ message.sender }}</div>
+        <div class="message-content">{{ message.content }}</div>
+        <div class="message-username">{{ message.username }}</div>
       </mat-card>
     </mat-list-item>
   </mat-list>

@@ -1,7 +1,6 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -22,6 +21,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
+import { Observable, Subscription } from 'rxjs';
+import { WebSocketService } from '../../websocket/websocket.service';
 
 @Component({
   selector: 'app-chat-bottom-sheet',
@@ -40,64 +41,78 @@ import { MatMenuModule } from '@angular/material/menu';
     MatToolbarModule,
     MatMenuModule,
     ChatSelectorComponent,
-    ChatDialogComponent
+    ChatDialogComponent,
   ],
 })
-export class ChatBottomSheetComponent implements OnInit {
+export class ChatBottomSheetComponent implements OnInit, OnDestroy {
   selectedConversation: Conversation | null = null;
 
   messageForm: FormGroup;
-  messages: Message[] = [];
-
-  conversations: Conversation[] = [];
-  conversationControl = new FormControl();
+  messages$: Observable<Message[]>;
+  private wsSubscription: Subscription = new Subscription();
 
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
+    private websocketService: WebSocketService,
     private bottomSheetRef: MatBottomSheetRef<ChatBottomSheetComponent>,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: { conversationId: string }
   ) {
     this.messageForm = this.fb.group({
-      content: ['', Validators.required]
+      content: ['', Validators.required],
     });
+
+    this.messages$ = this.messageService.messages$;
+  }
+
+  setupSockets() {
+    if (this.selectedConversation) {
+      this.websocketService.connect(this.selectedConversation.id);
+      this.wsSubscription = this.websocketService.onMessage().subscribe((message: Message) => {
+        console.log('incoming',message);
+        this.messageService.handleIncomingMessage(message);
+      });
+    }
   }
 
   ngOnInit(): void {
-    this.loadMessages();
-
-    this.messageService.messages$.subscribe((messages) => {
-      this.messages = messages;
-    });
-
     this.messageService.selectedConversation$.subscribe((conversation) => {
       this.selectedConversation = conversation;
-      // if (conversation) {
-      //   this.loadMessages(conversation.id);
-      // }
+      if (this.selectedConversation) {
+        this.setupSockets();
+      }
     });
+
+    // Initial load of messages
+    this.loadMessages();
   }
 
   loadMessages() {
-    this.messageService
-      .getMessages(this.data.conversationId);
- 
+    this.messageService.getMessages(this.data.conversationId);
   }
 
-  sendMessage() {
-    if (this.messageForm.valid) {
+  sendMessage(): void {
+    const content = this.messageForm.get('content')?.value;
+
+    if (content && this.selectedConversation) {
       const message: Message = {
-        ...this.messageForm.value,
-        conversationId: this.data.conversationId,
+        content,
+        conversation_id: this.selectedConversation.id,
       };
-      this.messageService.createMessage(message).subscribe((newMessage) => {
-        this.messages.push(newMessage);
-        this.messageForm.reset();
-      });
+
+      this.websocketService.sendMessage(message);
+      this.messageForm.reset();
     }
   }
 
   close() {
     this.bottomSheetRef.dismiss();
+  }
+
+  ngOnDestroy(): void {
+    this.websocketService.disconnect();
+    if (this.wsSubscription) {
+      this.wsSubscription.unsubscribe();
+    }
   }
 }

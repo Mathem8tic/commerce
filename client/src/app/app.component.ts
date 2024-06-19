@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -20,6 +20,7 @@ import { MessageService } from './message/message.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ChatBottomSheetComponent } from './message/chat-bottom-sheet/chat-bottom-sheet.component';
 import { CookieService } from 'ngx-cookie-service';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -56,7 +57,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private bottomSheet: MatBottomSheet,
     private cookieService: CookieService,
     media: MediaMatcher,
-    private messageService: MessageService
+    private messageService: MessageService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();

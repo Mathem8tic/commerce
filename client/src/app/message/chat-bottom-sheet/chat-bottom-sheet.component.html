@@ -22,7 +22,7 @@
   
     <app-chat-selector></app-chat-selector>
   
-    <app-chat-dialog [messages]="selectedConversation?.messages"></app-chat-dialog>
+    <app-chat-dialog [messages$]="messages$"></app-chat-dialog>
   
     <div class="input-container">
       <form [formGroup]="messageForm" (ngSubmit)="sendMessage()">

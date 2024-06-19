@@ -12,8 +12,22 @@ RUN apt-get update && apt-get install -y \
 # Copy requirements.txt from the context directory (commerce)
 COPY requirements.txt /app/
 
-RUN pip install -r requirements.txt
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy the rest of the application code
 COPY . /app/
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Ensure the staticfiles directory exists
+RUN mkdir -p /app/staticfiles
+
+# Collect static files
+RUN python manage.py collectstatic --noinput --settings=commerce.settings.development
+
+
+# Expose the port for daphne
+EXPOSE 8001
+
+# Run daphne server
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8001", "commerce.asgi:application"]
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8001"]
