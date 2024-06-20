@@ -10,7 +10,7 @@ RUN npm install -g @angular/cli
 COPY package.json package-lock.json ./
 RUN npm install
 
-RUN ng build --configuration production
+RUN cd client && ng build --configuration production
 
 # Copy the project files
 COPY . .
