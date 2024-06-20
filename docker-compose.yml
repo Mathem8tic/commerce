@@ -24,6 +24,8 @@ services:
     depends_on:
       - db
       - redis
+    ports:
+      - '8003:8003'
 
   redis:
     image: redis:latest
