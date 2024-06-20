@@ -1,7 +1,8 @@
 from .base import *
 
+
 DEBUG = False
-ALLOWED_HOSTS = ['friendsdiscount.ca']
+ALLOWED_HOSTS = ['143.198.32.144', 'friendsdiscount.ca']
 
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = BASE_DIR / 'static/'
