@@ -28,10 +28,10 @@ ENV DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
 # Collect static files and run migrations based on the environment
 RUN if [ DJANGO_SETTINGS_MODULE = "commerce.settings.production" ]; then \
         python manage.py collectstatic --noinput --settings=commerce.settings.production && \
-        python manage.py migrate --settings=commerce.settings.production; \
+        # python manage.py migrate --settings=commerce.settings.production; \
     else \
         python manage.py collectstatic --noinput --settings=commerce.settings.development && \
-        python manage.py migrate --settings=commerce.settings.development; \
+        # python manage.py migrate --settings=commerce.settings.development; \
     fi
 
 # Expose the port
