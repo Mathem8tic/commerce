@@ -21,13 +21,14 @@ COPY . /app/
 # Ensure the staticfiles directory exists
 RUN mkdir -p /app/staticfiles
 
-# Collect static files
-RUN python manage.py collectstatic --noinput --settings=commerce.settings.development
+# Collect static files and run migrations based on the environment
+RUN if [ ${DJANGO_SETTINGS_MODULE} = "commerce.settings.production" ]; then \
+        python manage.py collectstatic --noinput --settings=commerce.settings.production && \
+        python manage.py migrate --settings=commerce.settings.production; \
+    else \
+        python manage.py collectstatic --noinput --settings=commerce.settings.development && \
+        python manage.py migrate --settings=commerce.settings.development; \
+    fi
 
-
-# Expose the port for daphne
-EXPOSE 8001
-
-# Run daphne server
-CMD ["daphne", "-b", "0.0.0.0", "-p", "8001", "commerce.asgi:application"]
-# CMD ["python", "manage.py", "runserver", "0.0.0.0:8001"]
+# Expose the port
+EXPOSE 8000

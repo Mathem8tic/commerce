@@ -8,11 +8,11 @@ services:
       - ./commerce/staticfiles:/app/staticfiles
     command: daphne -b 0.0.0.0 -p 8000 commerce.asgi:application
     environment:
-      DJANGO_SETTINGS_MODULE: commerce.settings.production
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE}
     ports:
       - "8000:8000"
     depends_on:
