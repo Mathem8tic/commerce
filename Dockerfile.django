@@ -15,9 +15,6 @@ COPY requirements.txt /app/
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the wait-for-it script
-COPY wait-for-it.sh /wait-for-it.sh
-
 # Copy the rest of the application code
 COPY . /app/
 
