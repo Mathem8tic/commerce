@@ -38,7 +38,7 @@ services:
       dockerfile: ../Dockerfile.angular
     volumes:
       - ./client:/app:delegated
-    command: npm run serve:ssr
+    command: npm run serve:ssr:client --port=4300
     depends_on:
       - django
 
