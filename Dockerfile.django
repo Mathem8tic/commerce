@@ -7,7 +7,7 @@ WORKDIR /app
 
 # Install necessary system libraries
 RUN apt-get update && apt-get install -y \
-    libsystemd-dev
+    libsystemd-dev postgresql-client
 
 # Copy requirements.txt from the context directory (commerce)
 COPY requirements.txt /app/
@@ -15,22 +15,18 @@ COPY requirements.txt /app/
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy the wait-for-it script
+COPY wait-for-it.sh /wait-for-it.sh
+
 # Copy the rest of the application code
 COPY . /app/
 
 # Ensure the staticfiles directory exists
 RUN mkdir -p /app/staticfiles
-RUN mkdir -p /app/static
 
+# Set build argument and environment variable for Django settings module
 ARG DJANGO_SETTINGS_MODULE=commerce.settings.development
 ENV DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
-
-# Collect static files and run migrations based on the environment
-RUN if [ DJANGO_SETTINGS_MODULE = "commerce.settings.production" ]; then \
-        python manage.py collectstatic --noinput --settings=commerce.settings.production && \
-    else \
-        python manage.py collectstatic --noinput --settings=commerce.settings.development && \
-    fi
 
 # Expose the port
 EXPOSE 8000
