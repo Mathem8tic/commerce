@@ -29,6 +29,6 @@ ENV DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
 EXPOSE 8003
 
 # Set the default command to run daphne server
-CMD ./wait-for-it.sh db:5432 -- python manage.py collectstatic --noinput --settings=${DJANGO_SETTINGS_MODULE} && \
-    ./wait-for-it.sh db:5432 -- python manage.py migrate --settings=${DJANGO_SETTINGS_MODULE} && \
+CMD python manage.py collectstatic --noinput --settings=${DJANGO_SETTINGS_MODULE} && \
+    python manage.py migrate --settings=${DJANGO_SETTINGS_MODULE} && \
     daphne -b 0.0.0.0 -p 8003 commerce.asgi:application
