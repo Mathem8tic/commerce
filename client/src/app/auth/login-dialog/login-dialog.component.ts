@@ -30,14 +30,14 @@ export class LoginDialogComponent {
     private dialogRef: MatDialogRef<LoginDialogComponent>
   ) {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
+      login: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      this.authService.login(this.loginForm.value.username, this.loginForm.value.password)
+      this.authService.login(this.loginForm.value.login, this.loginForm.value.password)
         .subscribe(
           response => {
             localStorage.setItem('access_token', response.access);

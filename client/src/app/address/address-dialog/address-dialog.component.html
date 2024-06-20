@@ -1,25 +1,26 @@
-<h1 mat-dialog-title>{{ data.address ? 'Edit Address' : 'Create Address' }}</h1>
+<h1 mat-dialog-title>{{ data.address ? "Edit Address" : "Create Address" }}</h1>
 <div mat-dialog-content>
+  <br>
   <form [formGroup]="addressForm">
     <mat-form-field appearance="fill">
       <mat-label>Street</mat-label>
-      <input matInput formControlName="street">
+      <input matInput formControlName="street" />
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>City</mat-label>
-      <input matInput formControlName="city">
+      <input matInput formControlName="city" />
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>State</mat-label>
-      <input matInput formControlName="state">
+      <input matInput formControlName="state" />
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Zip</mat-label>
-      <input matInput formControlName="postal_code">
+      <input matInput formControlName="postal_code" />
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Country</mat-label>
-      <input matInput formControlName="country">
+      <input matInput formControlName="country" />
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Address Type</mat-label>
@@ -29,12 +30,25 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-checkbox formControlName="is_primary_shipping">Primary Shipping</mat-checkbox>
-    <mat-checkbox formControlName="is_primary_billing">Primary Billing</mat-checkbox>
+    <mat-checkbox formControlName="is_primary_shipping"
+      >Primary Shipping</mat-checkbox
+    >
+    <mat-checkbox formControlName="is_primary_billing"
+      >Primary Billing</mat-checkbox
+    >
   </form>
+  <br>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="cancel()">Cancel</button>
-  <button mat-button color="primary" (click)="save()">Save</button>
-  <button *ngIf="data.address" mat-button color="warn" (click)="delete()">Delete</button>
+  <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex>
+    <div>
+      <button *ngIf="data.address" mat-button color="warn" (click)="delete()">
+        Delete
+      </button>
+    </div>
+    <div>
+      <button mat-button (click)="cancel()">Cancel</button>
+      <button mat-button color="primary" (click)="save()">Save</button>
+    </div>
+  </div>
 </div>

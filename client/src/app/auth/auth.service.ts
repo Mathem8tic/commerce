@@ -7,15 +7,25 @@ import { environment } from '../../environments/environment';
 import { isPlatformBrowser } from '@angular/common';
 import { RegisterDialogComponent } from './register-dialog/register-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { User } from './User'
+import { MessageService } from '../message/message.service';
 
 export interface AuthResponse {
   access: string;
   refresh: string;
+  user?: {
+    id: string;
+    username: string;
+    email: string;
+    is_staff: boolean;
+    is_active: boolean;
+  };
 }
 
 interface CustomJwtPayload extends JwtPayload {
   is_staff?: boolean;
   is_user?: boolean;
+  username?: string;
 }
 
 @Injectable({
@@ -27,12 +37,21 @@ export class AuthService {
   private authState = new BehaviorSubject<boolean>(this.isLoggedIn());
   public authState$ = this.authState.asObservable();
 
+  private userSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+  public user$ = this.userSubject.asObservable();
+
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
+    private messageService: MessageService,
     private cookieService: CookieService,
     @Inject(PLATFORM_ID) private platformId: any
-  ) {}
+  ) {
+    const user = this.cookieService.get('user');
+    if (user) {
+      this.userSubject.next(JSON.parse(user) as User);
+    }
+  }
 
   register(data: {
     username: string;
@@ -44,9 +63,9 @@ export class AuthService {
       .pipe(catchError(this.handleError));
   }
 
-  login(username: string, password: string): Observable<AuthResponse> {
+  login(login: string, password: string): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(`${this.apiUrl}token/`, { username, password })
+      .post<AuthResponse>(`${this.apiUrl}token/`, { login, username: login, password })
       .pipe(
         tap((response) => this.setSession(response)),
         catchError(this.handleError)
@@ -76,8 +95,10 @@ export class AuthService {
   }
 
   logout(): void {
-    this.cookieService.delete('access_token');
-    this.cookieService.delete('refresh_token');
+    this.cookieService.delete('access_token', '/');
+    this.cookieService.delete('refresh_token', '/');
+    this.cookieService.delete('user', '/');
+    this.userSubject.next(null);
     this.authState.next(false);
   }
 
@@ -111,6 +132,10 @@ export class AuthService {
     return false;
   }
 
+  public getCurrentUser(): User | null {
+    return this.userSubject.value;
+  }
+
   openRegisterDialog(): void {
     const dialogRef = this.dialog.open(RegisterDialogComponent, {
       width: '300px',
@@ -138,6 +163,13 @@ export class AuthService {
     if (authResult.refresh) {
       this.cookieService.set('refresh_token', authResult.refresh);
     }
+
+    if (authResult.user) {
+      this.cookieService.set('user', JSON.stringify(authResult.user), expiresIn, '/', undefined, true, 'Strict');
+      this.userSubject.next(authResult.user);
+    }
+
+    this.messageService.getUserConversations();
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {

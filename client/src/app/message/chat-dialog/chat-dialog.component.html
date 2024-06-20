@@ -1,11 +1,12 @@
-<div class="message-container">
-  <mat-list *ngIf="messages$ | async as messages">
-    <mat-list-item *ngFor="let message of messages" class="mat-mdc-list-item">
+<div class="message-container" #chatDialog [ngClass]="size">
+  <mat-list *ngIf="messages">
+    <mat-list-item *ngFor="let message of messages" class="mat-mdc-list-item" [ngClass]="size">
       <mat-card
         class="message-card"
         [ngClass]="{
-          sent: message.username === 'admin',
-          received: message.username !== 'admin'
+          sent: message.username === user.username,
+          received: message.username !== user.username,
+          size
         }"
       >
         <div class="message-content">{{ message.content }}</div>

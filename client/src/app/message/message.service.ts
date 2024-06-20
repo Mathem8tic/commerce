@@ -14,6 +14,7 @@ import { LoadingDialogComponent } from '../components/loading-dialog/loading-dia
 import { environment } from '../../environments/environment';
 import { MessageDialogComponent } from './message-dialog/message-dialog.component';
 import { CookieService } from 'ngx-cookie-service';
+import { ConversationDialogComponent } from './conversation-dialog/conversation-dialog.component';
 
 @Injectable({
   providedIn: 'root',
@@ -42,6 +43,7 @@ export class MessageService {
     const dialogRef = this.dialog.open(LoadingDialogComponent, {
       disableClose: true,
     });
+    console.log(conversationId, 'conversation id');
     this.http
       .get<Message[]>(`${this.apiUrl}?conversation=${conversationId}`)
       .pipe(
@@ -110,13 +112,21 @@ export class MessageService {
       disableClose: true,
     });
     this.http
-      .get<Conversation[]>(`${this.conversationsUrl}my_conversations/`)
+      .get<Conversation[]>(`${this.conversationsUrl}user_conversations/`)
       .pipe(
         catchError(this.handleError),
         finalize(() => dialogRef.close())
       )
       .subscribe((conversations) => {
         this.conversations.next(conversations);
+        const conversationId = this.cookieService.get('conversation_id');
+        const selectedConversation = conversations.find(
+          (conversation) => conversation.id === conversationId
+        );
+
+        if (selectedConversation) {
+          this.setSelectedConversation(selectedConversation);
+        }
       });
   }
 
@@ -130,14 +140,30 @@ export class MessageService {
     );
   }
 
-  createConversation(participants: string[]): Observable<Conversation> {
+  createConversation(conversationData: string[]): Observable<Conversation> {
     const dialogRef = this.dialog.open(LoadingDialogComponent, {
       disableClose: true,
     });
     return this.http
-      .post<Conversation>(this.conversationsUrl, { participants })
+      .post<Conversation>(this.conversationsUrl, conversationData)
       .pipe(
         tap(() => this.showNotification('Conversation created successfully')),
+        catchError(this.handleError),
+        finalize(() => dialogRef.close())
+      );
+  }
+
+  updateConversation(id: string, conversation: Conversation): Observable<Conversation> {
+    const dialogRef = this.dialog.open(LoadingDialogComponent, {
+      disableClose: true,
+    });
+    return this.http
+      .put<Conversation>(
+        `${this.conversationsUrl}${conversation.id}/`,
+        conversation
+      )
+      .pipe(
+        tap(() => this.showNotification('Conversation updated successfully')),
         catchError(this.handleError),
         finalize(() => dialogRef.close())
       );
@@ -146,6 +172,30 @@ export class MessageService {
   handleIncomingMessage(message: Message) {
     const currentMessages = this.messages.getValue();
     this.messages.next([...currentMessages, message]);
+  }
+
+
+  openConversationDialog(conversation?: Conversation): void {
+    const dialogRef = this.dialog.open(ConversationDialogComponent, {
+      width: '600px',
+      data: conversation,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        if (conversation) {
+          this.updateConversation(conversation.id, result).subscribe(() => {
+            this.showNotification('Conversation updated');
+            this.getUserConversations();
+          });
+        } else {
+          this.createConversation(result).subscribe(() => {
+            this.showNotification('Conversation created');
+            this.getUserConversations();
+          });
+        }
+      }
+    });
   }
 
   openCreateDialog(): void {

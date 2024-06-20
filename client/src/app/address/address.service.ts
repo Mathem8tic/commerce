@@ -60,7 +60,7 @@ export class AddressService {
     const dialogRef = this.dialog.open(LoadingDialogComponent, {
       disableClose: true
     });
-    return this.http.delete<void>(`${this.apiUrl}${id}/`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}${id}`).pipe(
       tap(() => this.showNotification('Address deleted successfully')),
       catchError(this.handleError),
       finalize(() => dialogRef.close())

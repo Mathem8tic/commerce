@@ -3,8 +3,8 @@
     flex-direction: column
 
 .message-container
-    max-height: 300px
     overflow-y: auto
+    max-height: calc(100vh - 64px - 56px - 57px)
 
     &::-webkit-scrollbar
         width: 6px
@@ -15,10 +15,13 @@
 
     &::-webkit-scrollbar-track
         background: transparent
+    
+    &.small
+        max-height: 300px
 
 .message-card
     max-width: 75%
-    padding: 8px
+    padding: 16px
     border-radius: 8px
     display: inline-flex
 
@@ -30,6 +33,9 @@
         background-color: #dcf8c6
         align-self: flex-start
         float: right
+    
+    &.small
+        padding: 8px
 
 .message-content
     font-size: 16px
@@ -47,7 +53,10 @@
 
     ::ng-deep .mdc-list-item__content
         overflow: visible
-        padding: 8px
+        padding: 16px 32px
+
+        &.small
+            padding: 8px
 
     &-item
         height: auto

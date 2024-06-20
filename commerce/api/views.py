@@ -6,6 +6,10 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.core.mail import send_mail
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.exceptions import PermissionDenied
+from .filters import MessageFilter
+
 import logging
 
 from .models import Message, Address, Conversation
@@ -48,33 +52,57 @@ class ConversationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        participants = self.request.data.get('participants')
+        user = self.request.user
         conversation = serializer.save()
-        for participant_id in participants:
-            conversation.participants.add(participant_id)
-    
+        conversation.participants.add(user)  # Add the creator to the participants
+
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
-    def my_conversations(self, request):
+    def user_conversations(self, request):
         user = request.user
         logger.info(f"Fetching conversations for user: {user.id} - {user.username}")
-        conversations = Conversation.objects.filter(participants=user)
+        
+        if user.is_superuser:
+            conversations = Conversation.objects.all()
+        else:
+            conversations = Conversation.objects.filter(participants=user)
+            
         logger.info(f"Conversations found for user {user.username}: {conversations.count()}")
         serializer = self.get_serializer(conversations, many=True)
         return Response(serializer.data)
 
+
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
-    permission_classes = [AllowAny]  # Allow any user to create messages
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MessageFilter
 
     def get_permissions(self):
-        if self.action in ['destroy']:
+        if self.action == 'destroy':
             self.permission_classes = [IsAdminUser]
+        elif self.action == 'create':
+            self.permission_classes = [AllowAny]
         return super().get_permissions()
 
     def get_serializer_class(self):
         if self.action == 'create':
             return CreateMessageSerializer
         return MessageSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        conversation_id = self.request.query_params.get('conversation', None)
+
+        if conversation_id:
+            conversation = get_object_or_404(Conversation, id=conversation_id)
+            if user.is_superuser or user in conversation.participants.all():
+                return Message.objects.filter(conversation=conversation)
+            else:
+                raise PermissionDenied("You do not have permission to view messages in this conversation.")
+        else:
+            if user.is_superuser:
+                return Message.objects.all()
+            return Message.objects.none()
 
     def create(self, request, *args, **kwargs):
         logger.info("Create method called")
@@ -86,11 +114,11 @@ class MessageViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        
+
         headers = self.get_success_headers(serializer.data)
         response_data = serializer.data
         response_data['conversation_id'] = serializer.instance.conversation.id
-        
+
         return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
@@ -98,7 +126,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         logger.info(f"User in perform_create: {user}")
 
         conversation_id = self.request.data.get('conversation_id')
-        
+
         if conversation_id:
             conversation = get_object_or_404(Conversation, id=conversation_id)
         else:
@@ -110,7 +138,7 @@ class MessageViewSet(viewsets.ModelViewSet):
             )
             if user:
                 conversation.participants.add(user)
-        
+
         serializer.save(user=user, conversation=conversation)
 
     def update(self, request, *args, **kwargs):
@@ -138,7 +166,6 @@ class UserProfileView(APIView):
         user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data)
-
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer

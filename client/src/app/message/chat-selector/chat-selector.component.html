@@ -1,6 +1,8 @@
 <mat-form-field appearance="fill" style="width: 100%">
     <mat-label>Select Conversation</mat-label>
     <mat-select [formControl]="conversationControl" (selectionChange)="onConversationChange($event)">
+      <mat-option value="new"><mat-icon>add</mat-icon>Create New Conversation</mat-option>
+      <mat-divider></mat-divider>
       <mat-option *ngFor="let conversation of conversations" [value]="conversation">
         {{ conversation.title }}
       </mat-option>

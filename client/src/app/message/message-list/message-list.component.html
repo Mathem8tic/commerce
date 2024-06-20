@@ -1,14 +1,23 @@
-<div class="responsive-padding" fxLayout="column" fxLayoutGap="16px">
-  <h2>Messages</h2>
-  <div fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="end center">
+<div
+  fxLayout="column"
+  *ngIf="currentUser$ | async as currentUser; else noUser"
+>
+  <!-- <h2>Messages</h2> -->
+  <!-- <div fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="end center">
     <div>
       <button mat-icon-button (click)="getMessages()">
         <mat-icon>refresh</mat-icon>
       </button>
     </div>
-  </div>
-  <ng-container *ngIf="showMessages">
-    <div [@staggeredSlideInOut] fxLayout="column" fxLayoutGap="32px">
+  </div> -->
+  <app-chat-selector></app-chat-selector>
+  <app-chat-dialog
+    [messages$]="messages$"
+    [user]="currentUser"
+  ></app-chat-dialog>
+
+
+  <!--  <div [@staggeredSlideInOut] fxLayout="column" fxLayoutGap="32px">
       <div *ngFor="let message of messages">
         <mat-card class="message-card" fxFlex>
           <mat-card-header>
@@ -17,7 +26,6 @@
                 message.created_at | date
               }}</span></mat-card-subtitle
             >
-            <!-- <mat-card-title>{{ message.title }}</mat-card-title> -->
           </mat-card-header>
           <mat-card-content>
             <p class="mat-body-large">{{ message.content }}</p>
@@ -58,9 +66,30 @@
         </mat-card>
       </div>
     </div>
-  </ng-container>
+  </ng-container> -->
+  <div class="input-container">
+    <form [formGroup]="messageForm" (ngSubmit)="sendMessage()">
+      <div class="input-row">
+        <button mat-icon-button color="primary" type="submit">
+          <mat-icon>add</mat-icon>
+        </button>
+        <textarea
+          class="chat-input"
+          placeholder="Type message here"
+          matInput
+          formControlName="content"
+        ></textarea>
+        <button mat-icon-button color="primary" type="submit">
+          <mat-icon>send</mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <div class="fab">
   <button mat-fab (click)="openCreateDialog()"><mat-icon>add</mat-icon></button>
 </div>
+<ng-template #noUser>
+  <p>No user logged in.</p>
+</ng-template>

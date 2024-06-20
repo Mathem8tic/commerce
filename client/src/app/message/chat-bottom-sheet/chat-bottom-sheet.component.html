@@ -1,40 +1,61 @@
-<div class="chat-container">
-    <mat-toolbar color="primary">
-      <img mat-icon src="https://www.gravatar.com/avatar/HASH" alt="User Avatar" class="user-avatar" />
-      <div class="header-info">
-        <div class="user-email">mattharris.pro</div>
-      </div>
-      <span class="spacer"></span>
+<div
+  class="chat-container"
+  *ngIf="currentUser$ | async as currentUser; else noUser"
+>
+  <mat-toolbar color="primary">
+    <img
+      mat-icon
+      src="https://www.gravatar.com/avatar/HASH"
+      alt="User Avatar"
+      class="user-avatar"
+    />
+    <div class="header-info">
+      <div class="user-email">mattharris.pro</div>
+    </div>
+    <span class="spacer"></span>
+    <ng-container *ngIf="selectedConversation">
       <button mat-icon-button [matMenuTriggerFor]="menu">
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item>
+        <button
+          mat-menu-item
+          (click)="openConversationDialog(selectedConversation)"
+        >
           <mat-icon>settings</mat-icon>
           <span>Settings</span>
         </button>
-        <button mat-menu-item>
-          <mat-icon>info</mat-icon>
-          <span>About</span>
-        </button>
       </mat-menu>
-    </mat-toolbar>
-  
-    <app-chat-selector></app-chat-selector>
-  
-    <app-chat-dialog [messages$]="messages$"></app-chat-dialog>
-  
-    <div class="input-container">
-      <form [formGroup]="messageForm" (ngSubmit)="sendMessage()">
-        <div class="input-row">
-          <button mat-icon-button color="primary" type="submit">
-            <mat-icon>add</mat-icon>
-          </button>
-          <textarea class="chat-input" matInput formControlName="content"></textarea>
-          <button mat-icon-button color="primary" type="submit">
-            <mat-icon>send</mat-icon>
-          </button>
-        </div>
-      </form>
-    </div>
+    </ng-container>
+  </mat-toolbar>
+
+  <app-chat-selector></app-chat-selector>
+
+  <app-chat-dialog
+    [messages$]="messages$"
+    [user]="currentUser"
+    [size]="'small'"
+  ></app-chat-dialog>
+
+  <div class="input-container">
+    <form [formGroup]="messageForm" (ngSubmit)="sendMessage()">
+      <div class="input-row">
+        <button mat-icon-button color="primary" type="submit">
+          <mat-icon>add</mat-icon>
+        </button>
+        <textarea
+          class="chat-input"
+          matInput
+          formControlName="content"
+        ></textarea>
+        <button mat-icon-button color="primary" type="submit">
+          <mat-icon>send</mat-icon>
+        </button>
+      </div>
+    </form>
   </div>
+</div>
+
+<ng-template #noUser>
+  <p>No user logged in.</p>
+</ng-template>

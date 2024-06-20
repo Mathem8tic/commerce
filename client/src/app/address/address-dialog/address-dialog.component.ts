@@ -18,6 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule, NgFor } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-address-dialog',
@@ -32,6 +33,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    FlexLayoutModule,
     MatSelectModule,
     MatCheckboxModule,
   ],
@@ -86,6 +88,7 @@ export class AddressDialogComponent implements OnInit {
   }
 
   delete() {
+    console.log(this.data);
     if (this.data.address.id) {
       this.addressService.deleteAddress(this.data.address.id).subscribe(() => {
         this.dialogRef.close(true);

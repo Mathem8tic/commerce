@@ -1,0 +1,62 @@
+<h1 mat-dialog-title>{{ data ? "Edit Conversation" : "New Conversation" }}</h1>
+<div mat-dialog-content fxLayout="column" fxLayoutGap="20px">
+  <form [formGroup]="conversationForm" fxLayout="column" fxLayoutGap="20px">
+    <br />
+    <div fxLayout="column" fxLayoutGap="32px">
+      <div>
+        <mat-form-field fxFlex appearance="outline">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" />
+          <mat-error
+            *ngIf="conversationForm.get('title')?.hasError('required')"
+          >
+            Title is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxLayout.gt-sm="row" fxLayout="column" fxLayoutGap="32px">
+        <mat-form-field fxFlex appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email_address" />
+          <mat-error
+            *ngIf="conversationForm.get('email_address')?.hasError('required')"
+          >
+            Email is required
+          </mat-error>
+          <mat-error
+            *ngIf="conversationForm.get('email_address')?.hasError('email')"
+          >
+            Please enter a valid email address
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field fxFlex appearance="outline">
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="phone" />
+          <mat-error
+            *ngIf="conversationForm.get('phone')?.hasError('required')"
+          >
+            Phone is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <br />
+  </form>
+</div>
+<div
+  mat-dialog-actions
+  fxLayout="row"
+  fxLayoutAlign="end center"
+  fxLayoutGap="10px"
+>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button
+    mat-button
+    [disabled]="conversationForm.invalid"
+    (click)="onSave()"
+    cdkFocusInitial
+  >
+    Save
+  </button>
+</div>

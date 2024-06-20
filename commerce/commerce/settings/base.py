@@ -1,6 +1,6 @@
 import os
-import logging.config
 from pathlib import Path
+from datetime import timedelta
 
 # Base directory of the project
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -10,10 +10,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'ag85$1x(+1()%4d@&+nf!37vgk!5%^
 
 AUTH_USER_MODEL = 'api.CustomUser'
 
-ASGI_APPLICATION = 'commerce.settings.asgi.application'
-WSGI_APPLICATION = 'commerce.wsgi.application'
-
-# Application definition
+# Application definitions
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -22,11 +19,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    # 'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'debugpy',
     'channels',
+    'django_filters',
     'api'
 ]
 
@@ -37,15 +34,19 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'api.middleware.JWTAuthMiddlewareForHTTP',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
-    
+
+AUTHENTICATION_BACKENDS = (
+    'api.backends.EmailOrUsernameModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -60,8 +61,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
-
-from datetime import timedelta
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
@@ -85,6 +84,8 @@ SIMPLE_JWT = {
 }
 
 ROOT_URLCONF = 'commerce.urls'
+ASGI_APPLICATION = 'commerce.asgi.application'
+WSGI_APPLICATION = 'commerce.wsgi.application'
 
 TEMPLATES = [
     {
@@ -139,6 +140,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # CORS settings
 CORS_ORIGIN_ALLOW_ALL = True
@@ -189,6 +191,11 @@ LOGGING = {
             'handlers': ['file'],
             'level': 'DEBUG',
             'propagate': False,
+        },
+        'api': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': True,
         },
     },
 }

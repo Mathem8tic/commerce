@@ -6,5 +6,6 @@ djangorestframework-simplejwt
 channels
 channels_redis
 debugpy
+django-filter
 daphne
 psycopg2-binary

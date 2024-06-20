@@ -67,6 +67,7 @@ export class UserProfileComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        console.log(result, 'dialog result');
         // this.loadAddresses();
       }
     });
