@@ -1,6 +1,6 @@
 <div class="message-container" #chatDialog [ngClass]="size">
   <mat-list *ngIf="messages">
-    <mat-list-item *ngFor="let message of messages" class="mat-mdc-list-item" [ngClass]="size">
+    <mat-list-item *ngFor="let message of messages" [ngClass]="size">
       <mat-card
         class="message-card"
         [ngClass]="{

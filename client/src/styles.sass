@@ -6,14 +6,14 @@
 
 html
   @include mat.core-theme(m3-theme.$light-theme)
-  @include mat.all-component-themes(m3-theme.$dark-theme)
-
-  // @include mat.button-theme(m3-theme.$dark-theme);
+  @include mat.all-component-themes(m3-theme.$light-theme)
 
   // When using system variables, remember to provide values for them
   // or uncomment the lines below to generate them from the theme.
   @include mat.system-level-colors(m3-theme.$light-theme)
   @include mat.system-level-typography(m3-theme.$light-theme)
+
+  font-family: Roboto, sans-serif
 
 body
   margin: 0

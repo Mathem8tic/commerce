@@ -20,8 +20,8 @@
         >
       </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content>
-      <mat-toolbar class="toolbar mat-elevation-z3">
+    <mat-sidenav-content class="mat-typography">
+      <mat-toolbar class="toolbar mat-primary mat-elevation-z3">
         <div class="wrap">
           <div class="left">
             <div>
@@ -34,7 +34,7 @@
           </div>
 
           <div class="right">
-            <button mat-raised-button (click)="openChat()">Open Chat</button>
+            <button mat-flat-button (click)="openChat()">Open Chat</button>
             <button
               mat-icon-button
               (click)="openCreateMessageDialog()"
