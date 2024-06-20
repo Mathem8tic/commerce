@@ -36,3 +36,6 @@ RUN if [ DJANGO_SETTINGS_MODULE = "commerce.settings.production" ]; then \
 
 # Expose the port
 EXPOSE 8000
+
+# Set the default command to run daphne server
+CMD ["./wait-for-it.sh", "db:5432", "--", "daphne", "-b", "0.0.0.0", "-p", "8000", "commerce.asgi:application"]

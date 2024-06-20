@@ -6,7 +6,6 @@ services:
     volumes:
       - ./commerce:/app:delegated
       - ./commerce/staticfiles:/app/staticfiles
-    command: daphne -b 0.0.0.0 -p 8000 commerce.asgi:application
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -53,3 +52,6 @@ services:
 
 volumes:
   postgres_data:
+
+env_file:
+  - .env
