@@ -1,1 +1,43 @@
 /* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat
+@use './app/styles/m3-theme'
+
+@include mat.core()
+
+html
+  @include mat.core-theme(m3-theme.$light-theme)
+  @include mat.all-component-themes(m3-theme.$dark-theme)
+
+  // @include mat.button-theme(m3-theme.$dark-theme);
+
+  // When using system variables, remember to provide values for them
+  // or uncomment the lines below to generate them from the theme.
+  @include mat.system-level-colors(m3-theme.$light-theme)
+  @include mat.system-level-typography(m3-theme.$light-theme)
+
+body
+  margin: 0
+
+// Global styles
+$padding-small: 8px
+$padding-medium: 16px
+$padding-large: 32px
+$padding-xlarge: 64px
+
+.subtitle-opacity
+  opacity: 0.4
+
+.full-width
+  width: 100%
+
+.responsive-padding
+  padding: $padding-small
+
+  @media (min-width: 768px)
+    padding: $padding-medium
+
+  @media (min-width: 992px)
+    padding: $padding-large
+
+  @media (min-width: 1200px)
+    padding: $padding-xlarge

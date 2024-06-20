@@ -21,9 +21,9 @@
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
-      <mat-toolbar class="toolbar" color="primary">
-        <div>
-          <div>
+      <mat-toolbar class="toolbar mat-elevation-z3">
+        <div class="wrap">
+          <div class="left">
             <div>
               <button mat-icon-button (click)="sidenav.toggle()">
                 <mat-icon>menu</mat-icon>
@@ -33,17 +33,8 @@
             <div>Friends Discount</div>
           </div>
 
-          <div
-           
-           
-           
-          >
-            <button
-              mat-raised-button
-              (click)="openChat()"
-            >
-              Open Chat
-            </button>
+          <div class="right">
+            <button mat-raised-button (click)="openChat()">Open Chat</button>
             <button
               mat-icon-button
               (click)="openCreateMessageDialog()"
