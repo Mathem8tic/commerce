@@ -18,7 +18,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule, NgFor } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FlexLayoutModule } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-address-dialog',
@@ -33,7 +32,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    FlexLayoutModule,
     MatSelectModule,
     MatCheckboxModule,
   ],
@@ -69,15 +67,15 @@ export class AddressDialogComponent implements OnInit {
   save() {
     if (this.addressForm.valid) {
       const address: Address = this.addressForm.value;
-      if (this.data.address.id && this.data.address) {
+      if (this.data.address?.id && this.data.address) {
         this.addressService
           .updateAddress(this.data.address.id, address)
-          .subscribe(() => {
-            this.dialogRef.close(true);
+          .subscribe((address: Address) => {
+            this.dialogRef.close({update: true, address});
           });
       } else {
         this.addressService.createAddress(address).subscribe(() => {
-          this.dialogRef.close(true);
+          this.dialogRef.close({create: true, address});
         });
       }
     }
@@ -91,7 +89,7 @@ export class AddressDialogComponent implements OnInit {
     console.log(this.data);
     if (this.data.address.id) {
       this.addressService.deleteAddress(this.data.address.id).subscribe(() => {
-        this.dialogRef.close(true);
+        this.dialogRef.close({delete: true, address: this.data.address});
           this.snackBar.open('Address deleted successfully', 'Close', {
             duration: 3000,
           });

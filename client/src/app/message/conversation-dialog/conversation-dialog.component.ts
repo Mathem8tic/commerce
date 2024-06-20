@@ -5,7 +5,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Conversation } from '../message.service';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgIf } from '@angular/common';
 
 @Component({
@@ -18,8 +17,7 @@ import { NgIf } from '@angular/common';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDialogModule,
-    FlexLayoutModule
+    MatDialogModule
   ],
 })
 export class ConversationDialogComponent implements OnInit {

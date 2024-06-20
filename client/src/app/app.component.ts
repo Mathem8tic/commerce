@@ -11,7 +11,6 @@ import { LoginDialogComponent } from './auth/login-dialog/login-dialog.component
 import { MessageListComponent } from './message/message-list/message-list.component';
 import { RegisterDialogComponent } from './auth/register-dialog/register-dialog.component';
 import { AuthService } from './auth/auth.service';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatMenuModule } from '@angular/material/menu';
 import { MediaMatcher } from '@angular/cdk/layout';
@@ -35,7 +34,6 @@ import { environment } from '../environments/environment';
     MatListModule,
     MatMenuModule,
     MatSidenavModule,
-    FlexLayoutModule,
     MatIconModule,
     MatToolbarModule,
     MatDividerModule,

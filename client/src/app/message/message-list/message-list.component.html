@@ -1,9 +1,6 @@
-<div
-  fxLayout="column"
-  *ngIf="currentUser$ | async as currentUser; else noUser"
->
+<div *ngIf="currentUser$ | async as currentUser; else noUser">
   <!-- <h2>Messages</h2> -->
-  <!-- <div fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="end center">
+  <!-- <div>
     <div>
       <button mat-icon-button (click)="getMessages()">
         <mat-icon>refresh</mat-icon>
@@ -16,10 +13,9 @@
     [user]="currentUser"
   ></app-chat-dialog>
 
-
-  <!--  <div [@staggeredSlideInOut] fxLayout="column" fxLayoutGap="32px">
+  <!--  <div [@staggeredSlideInOut]>
       <div *ngFor="let message of messages">
-        <mat-card class="message-card" fxFlex>
+        <mat-card class="message-card">
           <mat-card-header>
             <mat-card-subtitle
               ><span class="subtitle-opacity">{{
@@ -32,10 +28,10 @@
           </mat-card-content>
           <mat-card-actions>
             <div
-              fxLayout="row"
-              fxLayoutGap="8px"
-              fxLayoutAlign="end center"
-              fxFlex
+             
+             
+
+             
             >
               <div>
                 <button

@@ -1,4 +1,10 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
 import { UserService } from '../user.service';
 import { CommonModule, isPlatformBrowser, NgIf } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -6,13 +12,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { Address } from 'cluster';
 import { AddressDialogComponent } from '../../address/address-dialog/address-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
+import { Address } from '../../address/address.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -23,7 +28,6 @@ import { MatDividerModule } from '@angular/material/divider';
     CommonModule,
     NgIf,
     MatCardModule,
-    FlexLayoutModule,
     MatListModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
@@ -40,6 +44,7 @@ export class UserProfileComponent implements OnInit {
 
   constructor(
     private userService: UserService,
+    private cd: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object,
     private dialog: MatDialog
   ) {
@@ -48,16 +53,20 @@ export class UserProfileComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.isBrowser) {
-      this.userService.getUserProfile().subscribe({
-        next: (data) => {
-          this.user = data;
-        },
-        error: (error) => {
-          console.error('There was an error!', error);
-          this.error = error;
-        },
-      });
+      this.getProfile();
     }
+  }
+
+  getProfile() {
+    this.userService.getUserProfile().subscribe({
+      next: (data) => {
+        this.user = data;
+      },
+      error: (error) => {
+        console.error('There was an error!', error);
+        this.error = error;
+      },
+    });
   }
 
   openAddressDialog(address?: Address) {
@@ -67,9 +76,25 @@ export class UserProfileComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log(result, 'dialog result');
-        // this.loadAddresses();
+        console.log('result', result);
+        if (result.delete) {
+          this.user.addresses = this.user.addresses.filter(
+            (a: Address) => a.id !== result.address.id
+          );
+        } else if (result.update) {
+          const index = this.user.addresses.findIndex(
+            (a: Address) => a.id === result.address.id
+          );
+          if (index !== -1) {
+            this.user.addresses[index] = result.address;
+          }
+        } else if (result.create) {
+          this.user.addresses.push(result.address);
+        }
+
+        this.getProfile()
       }
+      
     });
   }
 }

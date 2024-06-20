@@ -18,7 +18,6 @@ import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { ChatSelectorComponent } from '../chat-selector/chat-selector.component';
 import { ChatDialogComponent } from '../chat-dialog/chat-dialog.component';
 import { MatIconModule } from '@angular/material/icon';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { Observable, Subscription } from 'rxjs';
@@ -41,7 +40,6 @@ import { AuthService } from '../../auth/auth.service';
     MatInputModule,
     MatIconModule,
     MatButtonModule,
-    FlexLayoutModule,
     MatToolbarModule,
     MatMenuModule,
     ChatSelectorComponent,

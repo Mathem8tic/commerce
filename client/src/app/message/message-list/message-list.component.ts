@@ -4,9 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
-import { MessageDialogComponent } from '../message-dialog/message-dialog.component';
 import { AuthService } from '../../auth/auth.service';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import {
@@ -32,7 +30,6 @@ import { WebSocketService } from '../../websocket/websocket.service';
   imports: [
     CommonModule,
     MatButtonModule,
-    FlexLayoutModule,
     MatIconModule,
     MatFormFieldModule,
     ReactiveFormsModule,

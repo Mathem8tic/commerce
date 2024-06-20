@@ -10,7 +10,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FlexLayoutModule } from '@angular/flex-layout';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,6 +26,5 @@ export const appConfig: ApplicationConfig = {
     MatSnackBarModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
-    FlexLayoutModule
   ],
 };

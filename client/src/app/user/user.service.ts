@@ -38,17 +38,16 @@ export class UserService {
   constructor(private http: HttpClient, private dialog: MatDialog,) {}
 
   getUserProfile(): Observable<User> {
-    const dialogRef = this.dialog.open(LoadingDialogComponent, {
-      disableClose: true
-    });
+    // const dialogRef = this.dialog.open(LoadingDialogComponent, {
+    //   disableClose: true
+    // });
 
     return this.http.get<User>(this.apiUrl).pipe(
       tap(() => null),
       catchError(this.handleError),
-      finalize(() => dialogRef.close())
+      // finalize(() => dialogRef.close())
     );
     
-    return this.http.get<User>(this.apiUrl).pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {

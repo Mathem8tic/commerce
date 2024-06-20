@@ -6,7 +6,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Message, MessageService } from '../message.service';
-import { FlexLayoutModule } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-message-dialog',
@@ -16,7 +15,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    FlexLayoutModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
