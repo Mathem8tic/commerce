@@ -38,4 +38,6 @@ RUN if [ DJANGO_SETTINGS_MODULE = "commerce.settings.production" ]; then \
 EXPOSE 8000
 
 # Set the default command to run daphne server
-CMD ["./wait-for-it.sh", "db:5432", "--", "daphne", "-b", "0.0.0.0", "-p", "8000", "commerce.asgi:application"]
+CMD ./wait-for-it.sh db:5432 -- python manage.py collectstatic --noinput --settings=${DJANGO_SETTINGS_MODULE} && \
+    ./wait-for-it.sh db:5432 -- python manage.py migrate --settings=${DJANGO_SETTINGS_MODULE} && \
+    daphne -b 0.0.0.0 -p 8000 commerce.asgi:application
