@@ -6,15 +6,15 @@ services:
     volumes:
       - ./commerce:/app:delegated
       - ./commerce/staticfiles:/app/staticfiles
-    command: daphne -b 0.0.0.0 -p 8001 commerce.asgi:application
+    command: daphne -b 0.0.0.0 -p 8000 commerce.asgi:application
     environment:
-      DJANGO_SETTINGS_MODULE: commerce.settings.development
+      DJANGO_SETTINGS_MODULE: commerce.settings.production
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
     ports:
-      - "8001:8001"
+      - "8000:8000"
     depends_on:
       - db
       - redis
