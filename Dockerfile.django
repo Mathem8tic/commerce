@@ -20,6 +20,7 @@ COPY . /app/
 
 # Ensure the staticfiles directory exists
 RUN mkdir -p /app/staticfiles
+RUN mkdir -p /app/static
 
 ARG DJANGO_SETTINGS_MODULE=commerce.settings.development
 ENV DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
