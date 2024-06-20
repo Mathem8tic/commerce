@@ -49,6 +49,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "outputPath": "../../commerce-angular-build/dist",
               "budgets": [
                 {
                   "type": "initial",
