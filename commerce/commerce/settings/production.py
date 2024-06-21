@@ -3,6 +3,10 @@ from .base import *
 
 DEBUG = False
 ALLOWED_HOSTS = ['143.198.32.144', 'friendsdiscount.ca']
+CORS_ALLOWED_ORIGINS = [
+    "https://friendsdiscount.ca",
+    "https://143.198.32.144",
+]
 
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = BASE_DIR / 'static/'
