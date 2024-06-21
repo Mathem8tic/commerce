@@ -14,8 +14,8 @@ services:
       dockerfile: ../Dockerfile.django
     volumes:
       - ./commerce:/app:delegated
-      - ./static:/app/staticfiles
-      - ./media:/app/media
+      # - ./static:/app/staticfiles
+      # - ./media:/app/media
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -35,5 +35,5 @@ services:
 
 volumes:
   postgres_data:
-  static:
-  media:
+  # static:
+  # media:
