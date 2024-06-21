@@ -3,6 +3,10 @@ from .base import *
 
 DEBUG = False
 ALLOWED_HOSTS = ['143.198.32.144', 'friendsdiscount.ca']
+# Ensure SSL redirect is enabled for HTTPS
+SECURE_SSL_REDIRECT = True
+# Trust the reverse proxy's scheme headers
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CORS_ALLOWED_ORIGINS = [
     "https://friendsdiscount.ca",
     "https://143.198.32.144",
