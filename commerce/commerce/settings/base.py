@@ -5,16 +5,6 @@ from datetime import timedelta
 # Base directory of the project
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
-
-# The directory where `collectstatic` will collect static files for deployment.
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Additional locations of static files
-# STATICFILES_DIRS = [
-#     BASE_DIR / 'static',
-# ]
 
 # Security settings
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'ag85$1x(+1()%4d@&+nf!37vgk!5%^v(mdbl69o9s=v_ulrj7c')

@@ -12,8 +12,11 @@ CORS_ALLOWED_ORIGINS = [
     "https://143.198.32.144",
 ]
 
-# Static files (CSS, JavaScript, Images)
-STATIC_ROOT = BASE_DIR / 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Security settings
 SECURE_HSTS_SECONDS = 31536000
