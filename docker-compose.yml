@@ -32,11 +32,11 @@ services:
 
   angular:
     build:
-      context: ./client
-      dockerfile: Dockerfile.angular
+      context: .
+      dockerfile: ./client/Dockerfile.angular
     command: npm run serve:ssr:client
     volumes:
-      - ./client:/srv/www/friendsdiscount/angular
+      - ./client:/app
     expose:
       - 4000
 
