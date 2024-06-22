@@ -22,7 +22,7 @@ FROM node:22.0.0
 WORKDIR /app
 
 # Copy the built files from the previous stage
-COPY --from=build /app/dist/client /app/dist/client
+# COPY --from=build /app/dist/client /app/dist/client
 
 EXPOSE 4000
 
