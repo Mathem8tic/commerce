@@ -16,7 +16,7 @@ services:
 
   django:
     build:
-      context: .
+      context: ./commerce
       dockerfile: Dockerfile.django
     command: daphne -b 0.0.0.0 -p 8000 commerce.asgi:application
     volumes:
@@ -31,7 +31,7 @@ services:
 
   angular:
     build:
-      context: .
+      context: ./client
       dockerfile: Dockerfile.angular
     command: npm run serve:ssr
     volumes:
