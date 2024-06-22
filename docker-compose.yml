@@ -32,8 +32,8 @@ services:
 
   angular:
     build:
-      context: .
-      dockerfile: client/Dockerfile.angular
+      context: ./client
+      dockerfile: Dockerfile.angular
     command: npm run serve:ssr:client
     volumes:
       - ./client:/srv/www/friendsdiscount/angular
