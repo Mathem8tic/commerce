@@ -2,13 +2,21 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
+# Copy the requirements.txt file into the container
 COPY requirements.txt /app/
+
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy the entire application directory into the container
 COPY . /app/
 
+# Create the static directory
+RUN mkdir -p /app/static
+
+# Collect static files
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "your_project_name.asgi:application"]
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "commerce.asgi:application"]
