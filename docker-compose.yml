@@ -2,7 +2,7 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: ./Dockerfile.nginx
+      dockerfile: Dockerfile.nginx
     ports:
       - "80:80"
       - "443:443"
@@ -17,7 +17,7 @@ services:
   django:
     build:
       context: .
-      dockerfile: ./Dockerfile.django
+      dockerfile: Dockerfile.django
     command: daphne -b 0.0.0.0 -p 8000 commerce.asgi:application
     volumes:
       - ./commerce:/srv/www/friendsdiscount/django
@@ -32,7 +32,7 @@ services:
   angular:
     build:
       context: ./client
-      dockerfile: ./Dockerfile.angular
+      dockerfile: Dockerfile.angular
     command: npm run serve:ssr
     volumes:
       - ./client:/srv/www/friendsdiscount/angular
