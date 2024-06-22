@@ -1,39 +1,64 @@
+version: '3.8'
+
 services:
-  db:
-    image: postgres:13
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - ./nginx:/etc/nginx
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/www/certbot
+    depends_on:
+      - django
+      - angular
 
   django:
     build:
-      context: ./commerce
-      dockerfile: ../Dockerfile.django
+      context: .
+      dockerfile: Dockerfile.django
+    command: daphne -b 0.0.0.0 -p 8000 your_project_name.asgi:application
     volumes:
-      - ./commerce:/app:delegated
-      # - ./static:/app/staticfiles
-      # - ./media:/app/media
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
-      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE}
+      - .:/app
+    expose:
+      - 8000
+    env_file:
+      - .env
     depends_on:
       - db
       - redis
-    ports:
-      - '8003:8000'  # Changed to map Django's internal port to 8003 on the host
+
+  angular:
+    build:
+      context: ./angular
+      dockerfile: Dockerfile.angular
+    command: npm run serve:ssr
+    volumes:
+      - ./angular:/app
+    expose:
+      - 4000
+
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: your_db_name
+      POSTGRES_USER: your_db_user
+      POSTGRES_PASSWORD: your_db_password
 
   redis:
-    image: redis:latest
+    image: redis:6
     ports:
-      - '6379:6379'
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 
 volumes:
   postgres_data:
-  # static:
-  # media:
+  redis_data:
+  certbot-etc:
+  certbot-var:

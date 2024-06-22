@@ -1,21 +1,22 @@
-# Use the latest Node.js LTS version
-FROM node:18-alpine as build
+# Stage 1: Build the Angular application
+FROM node:16 as build
 
 WORKDIR /app
 
-# Install Angular CLI globally
-RUN npm install -g @angular/cli
-
-# Install dependencies
-COPY package.json package-lock.json ./
+COPY package*.json ./
 RUN npm install
 
-# Copy the project files
 COPY . .
 
-EXPOSE 4200
+RUN npm run build:ssr
 
-# RUN ng build --configuration production
+# Stage 2: Serve the Angular application
+FROM node:16
 
-# Expose the Angular development server
-# CMD ["ng", "serve"]
+WORKDIR /app
+
+COPY --from=build /app/dist /app/dist
+
+EXPOSE 4000
+
+CMD ["npm", "run", "serve:ssr"]
