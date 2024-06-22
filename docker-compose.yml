@@ -33,8 +33,8 @@ services:
   angular:
     build:
       context: .
-      dockerfile: ./client/Dockerfile.angular
-    command: npm run serve:ssr:client
+      dockerfile: client/Dockerfile.angular
+    command: node dist/client/server/main.js
     volumes:
       - ./client:/app
     expose:
