@@ -1,6 +1,7 @@
 FROM node:22.0.0 as build
 WORKDIR /app/src
 COPY client/package*.json ./
+RUN npm install
 COPY . ./
 RUN npm run build:ssr
 
