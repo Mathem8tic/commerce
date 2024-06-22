@@ -8,7 +8,9 @@ RUN npm install
 
 COPY . .
 
-RUN ls -l /app/client # Debug step to list contents
+# Debug step to list contents
+RUN ls -l /app/client 
+
 RUN npm run build:ssr
 
 # Stage 2: Serve the Angular application
@@ -18,7 +20,8 @@ WORKDIR /app/client
 
 COPY --from=build /app/client/dist /app/client/dist
 
-RUN ls -l /app/client/dist # Debug step to list contents
+# Debug step to list contents
+RUN ls -l /app/client/dist 
 
 EXPOSE 4000
 
