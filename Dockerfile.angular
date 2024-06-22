@@ -13,7 +13,9 @@ RUN npm install
 # Copy the project files
 COPY . .
 
-RUN ng build --configuration production
+EXPOSE 4200
+
+# RUN ng build --configuration production
 
 # Expose the Angular development server
-# CMD ["ng", "run", "build", "configuration", "production"]
+# CMD ["ng", "serve"]
