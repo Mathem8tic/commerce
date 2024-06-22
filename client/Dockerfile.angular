@@ -1,11 +1,11 @@
 FROM node:22.0.0 as build
 WORKDIR /app/src
-COPY package*.json ./
+COPY client/package*.json ./
 COPY . ./
 RUN npm run build:ssr
 
 FROM node:22.0.0
 WORKDIR /usr/app
-COPY --from=build /app/src/dist/<your-project-name>/ ./
+COPY --from=build /app/src/dist/client/ ./
 CMD node server/server.mjs
 EXPOSE 4000
