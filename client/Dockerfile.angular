@@ -19,7 +19,6 @@ RUN npm run build:ssr
 # Debugging: Check the contents of the dist folder
 RUN ls -la /app/dist
 RUN ls -la /app/dist/client
-RUN ls -la /app/dist/client/browser
 RUN ls -la /app/dist/client/server
 
 # Stage 2: Serve the Angular application
