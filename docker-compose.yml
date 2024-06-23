@@ -8,9 +8,9 @@ services:
       - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/srv/www/certbot
-      - certbot-www:/srv/www/certbot
+      # - certbot-etc:/etc/letsencrypt
+      # - certbot-var:/srv/www/certbot
+      # - certbot-www:/srv/www/certbot
     depends_on:
       - django
       - angular
@@ -57,16 +57,16 @@ services:
     volumes:
       - redis_data:/data
 
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/srv/www/certbot
-      - certbot-www:/srv/www/certbot
+  # certbot:
+  #   image: certbot/certbot
+  #   volumes:
+  #     - certbot-etc:/etc/letsencrypt
+  #     - certbot-var:/srv/www/certbot
+  #     - certbot-www:/srv/www/certbot
 
 volumes:
   postgres_data:
   redis_data:
-  certbot-etc:
-  certbot-var:
-  certbot-www:
+  # certbot-etc:
+  # certbot-var:
+  # certbot-www:
