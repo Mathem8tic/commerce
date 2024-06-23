@@ -21,6 +21,5 @@ WORKDIR /app
 
 # Copy the built files from the previous stage
 COPY --from=build /app/dist/client /app/dist/client
-COPY --from=build /app/build_output.log /app/build_output.log
 
 EXPOSE 4000
