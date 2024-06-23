@@ -37,9 +37,12 @@ services:
       dockerfile: client/Dockerfile.angular
     command: node dist/client/server/server.mjs
     volumes:
-      - ./client:/app
-    expose:
-      - 4000
+      # Only map the necessary directories to avoid overwriting built files
+      - ./client:/app/src
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: production
 
   db:
     image: postgres:13
