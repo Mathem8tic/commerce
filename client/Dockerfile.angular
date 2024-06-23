@@ -15,9 +15,6 @@ COPY . .
 # Build the Angular application with SSR
 RUN npm run build:ssr
 
-# Verify the contents of the build directory
-RUN ls -lah /app/dist
-
 # Stage 2: Serve the Angular application
 FROM node:22.0.0
 
@@ -33,4 +30,4 @@ RUN npm install -g pm2
 EXPOSE 4000
 
 # Command to run the server
-CMD ["pm2-runtime", "dist/server/server.mjs"]
+CMD ["pm2-runtime", "dist/client/server/server.mjs"]

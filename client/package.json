@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build:ssr": "ng build --configuration production",
-    "serve:ssr": "node dist/client/server/server.js"
+    "serve:ssr": "node dist/client/server/server.mjs"
   },
   "private": true,
   "dependencies": {
