@@ -34,7 +34,7 @@ services:
     build:
       context: .
       dockerfile: client/Dockerfile.angular
-    command: node dist/client/server/main.js
+    command: node server/main.js
     volumes:
       - ./client:/app
     expose:
