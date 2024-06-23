@@ -10,16 +10,13 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+RUN npm install -g @angular/cli
+
 # Copy the rest of the application source code
 COPY . .
 
 # Build the application for SSR
-RUN npm run build:ssr
-
-# Debugging: Check the contents of the dist folder
-RUN ls -la /app/dist
-RUN ls -la /app/dist/client
-RUN ls -la /app/dist/client/server
+RUN ng build --configuration=production
 
 # Stage 2: Serve the Angular application
 FROM node:22.0.0
@@ -29,13 +26,6 @@ WORKDIR /app
 
 # Copy the built application from the build stage
 COPY --from=build /app/dist/client ./dist/client
-
-# Debugging: Check the contents of the final app folder
-RUN ls -la /app/dist/client
-
-# Install server dependencies (if there are any specific to server-side rendering)
-COPY --from=build /app/package*.json ./
-RUN npm install --only=prod
 
 # Start the application
 CMD ["node", "dist/client/server/server.mjs"]
