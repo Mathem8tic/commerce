@@ -52,11 +52,18 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/friends-discount-django:latest,${{ secrets.DOCKER_USERNAME }}/friends-discount-django:${{ github.sha }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Generate artifact attestation
+      - name: Generate artifact attestation for Angular
         uses: actions/attest-build-provenance@v1
         with:
-          subject-name: ${{ secrets.DOCKER_USERNAME }}/friends-discount-angular,${{ secrets.DOCKER_USERNAME }}/friends-discount-django
-          subject-digest: ${{ steps.push_angular.outputs.digest }},${{ steps.push_django.outputs.digest }}
+          subject-name: ${{ secrets.DOCKER_USERNAME }}/friends-discount-angular
+          subject-digest: ${{ steps.push_angular.outputs.digest }}
+          push-to-registry: true
+
+      - name: Generate artifact attestation for Django
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ secrets.DOCKER_USERNAME }}/friends-discount-django
+          subject-digest: ${{ steps.push_django.outputs.digest }}
           push-to-registry: true
 
   deploy_to_server:
@@ -77,6 +84,3 @@ jobs:
             cd /srv/www/friendsdiscount
             docker-compose pull
             docker-compose up -d
-
-
-            
