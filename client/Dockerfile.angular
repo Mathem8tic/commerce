@@ -1,33 +1,42 @@
 # Stage 1: Build the Angular application
 FROM node:22.0.0 as build
 
+# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to leverage Docker cache
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the Angular project files
+# Copy the rest of the application source code
 COPY . .
 
-# Build the Angular application with SSR
+# Build the application for SSR
 RUN npm run build:ssr
+
+# Debugging: Check the contents of the dist folder
+RUN ls -la /app/dist
+RUN ls -la /app/dist/client
+RUN ls -la /app/dist/client/browser
+RUN ls -la /app/dist/client/server
 
 # Stage 2: Serve the Angular application
 FROM node:22.0.0
 
+# Set the working directory
 WORKDIR /app
 
-# Copy the built files from the previous stage
-COPY --from=build /app/dist ./dist
+# Copy the built application from the build stage
+COPY --from=build /app/dist/client ./dist/client
 
-# Install PM2 to run the server
-RUN npm install -g pm2
+# Debugging: Check the contents of the final app folder
+RUN ls -la /app/dist/client
 
-# Expose the port the app runs on
-EXPOSE 4000
+# Install server dependencies (if there are any specific to server-side rendering)
+COPY --from=build /app/package*.json ./
+RUN npm install --only=prod
 
-# Command to run the server
-CMD ["pm2-runtime", "dist/client/server/server.mjs"]
+# Start the application
+CMD ["node", "dist/client/server/server.mjs"]
