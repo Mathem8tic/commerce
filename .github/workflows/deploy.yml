@@ -24,13 +24,13 @@ jobs:
 
       - name: Build and Push Angular Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/angular:latest -f client/Dockerfile.angular ./client
-          docker push ${{ secrets.DOCKER_USERNAME }}/angular:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/friends-discount-angular:latest -f client/Dockerfile.angular ./client
+          docker push ${{ secrets.DOCKER_USERNAME }}/friends-discount-angular:latest
 
       - name: Build and Push Django Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/django:latest -f commerce/Dockerfile.django ./commerce
-          docker push ${{ secrets.DOCKER_USERNAME }}/django:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/friends-discount-django:latest -f commerce/Dockerfile.django ./commerce
+          docker push ${{ secrets.DOCKER_USERNAME }}/friends-discount-django:latest
 
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
