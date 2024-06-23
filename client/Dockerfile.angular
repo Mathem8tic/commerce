@@ -21,7 +21,7 @@ FROM node:22.0.0
 WORKDIR /app
 
 # Copy the built files from the previous stage
-COPY --from=build /app/dist /app/dist
+COPY --from=build /app/dist/client /app/dist/client
 
 # Install PM2 to run the server
 RUN npm install -g pm2
@@ -30,4 +30,4 @@ RUN npm install -g pm2
 EXPOSE 4000
 
 # Command to run the server
-CMD ["pm2-runtime", "dist/server/main.js"]
+CMD ["pm2-runtime", "dist/client/server/main.server.mjs"]
