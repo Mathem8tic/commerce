@@ -74,4 +74,4 @@ jobs:
           script: |
             cd /usr/local/bin/docker-compose
             docker-compose pull
-            docker-compose up -d
+            docker-compose up -d 
