@@ -1,36 +1,68 @@
-name: CI/CD Pipeline
+name: Publish Docker image
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 jobs:
-  build-and-deploy:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
+      - name: Check out the repo
+        uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Angular Image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/friends-discount-angular:latest -f client/Dockerfile.angular ./client
-          docker push ${{ secrets.DOCKER_USERNAME }}/friends-discount-angular:latest
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ secrets.DOCKER_USERNAME }}/friends-discount-angular,${{ secrets.DOCKER_USERNAME }}/friends-discount-django
 
-      - name: Build and Push Django Image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/friends-discount-django:latest -f commerce/Dockerfile.django ./commerce
-          docker push ${{ secrets.DOCKER_USERNAME }}/friends-discount-django:latest
+      - name: Build and push Angular Docker image
+        id: push_angular
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: ./client
+          file: ./client/Dockerfile.angular
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/friends-discount-angular:latest,${{ secrets.DOCKER_USERNAME }}/friends-discount-angular:${{ github.sha }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Build and push Django Docker image
+        id: push_django
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: ./commerce
+          file: ./commerce/Dockerfile.django
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/friends-discount-django:latest,${{ secrets.DOCKER_USERNAME }}/friends-discount-django:${{ github.sha }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ secrets.DOCKER_USERNAME }}/friends-discount-angular,${{ secrets.DOCKER_USERNAME }}/friends-discount-django
+          subject-digest: ${{ steps.push_angular.outputs.digest }},${{ steps.push_django.outputs.digest }}
+          push-to-registry: true
+
+  deploy_to_server:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    needs: push_to_registry
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4
 
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
