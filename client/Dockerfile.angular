@@ -30,4 +30,4 @@ RUN npm install -g pm2
 EXPOSE 4000
 
 # Command to run the server
-CMD ["pm2-runtime", "dist/client/server/main.server.mjs"]
+CMD ["pm2-runtime", "dist/client/server/server.mjs"]
