@@ -53,25 +53,25 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/friends-discount-django:latest,${{ secrets.DOCKER_USERNAME }}/friends-discount-django:${{ github.sha }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Generate artifact attestation for Angular
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-name: ${{ secrets.DOCKER_USERNAME }}/friends-discount-angular
-          subject-digest: ${{ steps.push_angular.outputs.digest }}
-          push-to-registry: true
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      # - name: Generate artifact attestation for Angular
+      #   uses: actions/attest-build-provenance@v1
+      #   with:
+      #     subject-name: ${{ secrets.DOCKER_USERNAME }}/friends-discount-angular
+      #     subject-digest: ${{ steps.push_angular.outputs.digest }}
+      #     push-to-registry: true
+      #   env:
+      #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Generate artifact attestation for Django
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-name: ${{ secrets.DOCKER_USERNAME }}/friends-discount-django
-          subject-digest: ${{ steps.push_django.outputs.digest }}
-          push-to-registry: true
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      # - name: Generate artifact attestation for Django
+      #   uses: actions/attest-build-provenance@v1
+      #   with:
+      #     subject-name: ${{ secrets.DOCKER_USERNAME }}/friends-discount-django
+      #     subject-digest: ${{ steps.push_django.outputs.digest }}
+      #     push-to-registry: true
+      #   env:
+      #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   deploy_to_server:
     name: Deploy to Server
