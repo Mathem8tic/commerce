@@ -5,7 +5,6 @@ from datetime import timedelta
 # Base directory of the project
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-
 # Security settings
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'ag85$1x(+1()%4d@&+nf!37vgk!5%^v(mdbl69o9s=v_ulrj7c')
 
@@ -25,7 +24,7 @@ INSTALLED_APPS = [
     'debugpy',
     'channels',
     'django_filters',
-    'api'
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -37,7 +36,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'api.middleware.JWTAuthMiddlewareForHTTP',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -143,9 +142,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # CORS settings
 CORS_ORIGIN_ALLOW_ALL = True
 
+# Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp-relay.gmail.com'
 EMAIL_PORT = 587
