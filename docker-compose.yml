@@ -9,7 +9,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - /etc/letsencrypt/:/etc/letsencrypt
-      - .:/app
+      - staticfiles:/commerce/staticfiles
     depends_on:
       - django
       - angular
@@ -20,7 +20,7 @@ services:
       dockerfile: Dockerfile.django
     command: daphne -b 0.0.0.0 -p 8000 commerce.asgi:application
     volumes:
-      - ./staticfiles:/app/staticfiles
+      - staticfiles:/staticfiles
     expose:
       - 8000
     env_file:
@@ -58,3 +58,4 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  staticfiles:
