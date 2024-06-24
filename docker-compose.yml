@@ -9,7 +9,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - /etc/letsencrypt/:/etc/letsencrypt
-      - staticfiles/staticfiles
+      - staticfiles:/staticfiles
     depends_on:
       - django
       - angular
