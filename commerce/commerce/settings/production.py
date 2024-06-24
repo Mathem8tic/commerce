@@ -1,7 +1,8 @@
 from .base import *
 
 DEBUG = False
-ALLOWED_HOSTS = ['143.198.32.144', 'friendsdiscount.ca', 'api.friendsdiscount.ca', 'django']
+ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['143.198.32.144', 'friendsdiscount.ca', 'api.friendsdiscount.ca', 'django']
 
 # Security settings
 SECURE_SSL_REDIRECT = True
