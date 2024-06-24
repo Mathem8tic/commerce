@@ -9,7 +9,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - /etc/letsencrypt/:/etc/letsencrypt
-      - ./commerce/staticfiles:/srv/www/friendsdiscount/commerce/static
+      - /commerce/staticfiles:/srv/www/friendsdiscount/commerce/static
     depends_on:
       - django
       - angular
