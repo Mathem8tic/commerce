@@ -21,6 +21,7 @@ services:
     command: daphne -b 0.0.0.0 -p 8000 commerce.asgi:application
     volumes:
       - ./:/srv/www/friendsdiscount/commerce
+      - ./commerce/staticfiles:/srv/www/friendsdiscount/commerce/static
     expose:
       - 8000
     env_file:
