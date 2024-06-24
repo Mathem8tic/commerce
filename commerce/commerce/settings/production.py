@@ -18,7 +18,6 @@ CORS_ALLOWED_ORIGINS = [
     "https://friendsdiscount.ca",
     "https://api.friendsdiscount.ca",
     "https://143.198.32.144",
-    "django"
 ]
 
 # CSRF settings
@@ -26,7 +25,6 @@ CSRF_TRUSTED_ORIGINS = [
     "https://friendsdiscount.ca",
     "https://api.friendsdiscount.ca",
     "https://143.198.32.144",
-    "django"
 ]
 
 # Static and media files
