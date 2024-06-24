@@ -2,11 +2,11 @@ services:
   django:
     build:
       context: ./commerce
-      dockerfile: ../Dockerfile.django
+      dockerfile: Dockerfile.django
     volumes:
-      - ./commerce:/app:delegated
+      - ./commerce:/app
       - ./commerce/staticfiles:/app/staticfiles
-    command: daphne -b 0.0.0.0 -p 8003 commerce.asgi:application
+    command: daphne -b 0.0.0.0 -p 8000 commerce.asgi:application
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -14,7 +14,7 @@ services:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE}
     ports:
-      - "8003:8003"
+      - "8000:8000"
     depends_on:
       - db
       - redis
@@ -25,16 +25,17 @@ services:
       - '6379:6379'
 
   angular:
-    command: ng serve --host 0.0.0.0
+    command: npm run start
     build:
       context: ./client
-      dockerfile: ../Dockerfile.angular
+      dockerfile: Dockerfile.angular
     volumes:
-      - ./client:/app:delegated
+      - ./client:/app
     ports:
       - "4200:4200"
     environment:
-      - CHOKIDAR_USEPOLLING=true
+      CHOKIDAR_USEPOLLING: true
+      NODE_ENV: development
     depends_on:
       - django
 

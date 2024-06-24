@@ -102,6 +102,7 @@
               }
             ],
             "styles": [
+
               "src/styles.sass"
             ],
             "scripts": []

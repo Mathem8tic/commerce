@@ -28,10 +28,7 @@ WORKDIR /app
 # Copy the built application from the build stage
 COPY --from=build /app ./
 
-
-# Install production dependencies (if any)
-COPY package*.json ./
-RUN npm install --only=prod
+EXPOSE 4000 4200
 
 # Start the application
 # CMD ["node", "./dist/client/server/server.mjs"]
