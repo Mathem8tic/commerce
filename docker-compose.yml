@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   nginx:
     build:
@@ -32,9 +30,9 @@ services:
 
   angular:
     build:
-      context: .
-      dockerfile: client/Dockerfile.angular
-    command: node dist/client/server/server.mjs
+      context: ./client
+      dockerfile: Dockerfile.angular
+    # command: node dist/client/server/server.mjs
     ports:
       - "4000:4000"
     environment:
