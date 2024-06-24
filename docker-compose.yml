@@ -20,8 +20,7 @@ services:
       dockerfile: Dockerfile.django
     command: daphne -b 0.0.0.0 -p 8000 commerce.asgi:application
     volumes:
-      - .:/srv/www/friendsdiscount/commerce
-      - ./staticfiles:/srv/www/friendsdiscount/commerce/static
+      - ./staticfiles:./static
     expose:
       - 8000
     env_file:
