@@ -34,4 +34,4 @@ COPY package*.json ./
 RUN npm install --only=prod
 
 # Start the application
-CMD ["node", "./dist/client/server/server.mjs"]
+# CMD ["node", "./dist/client/server/server.mjs"]

@@ -1,3 +1,5 @@
 FROM nginx:latest
 
+RUN certbot certonly --nginx --register-unsafely-without-email --agree-tos -d friendsdiscount.ca
+
 COPY nginx.conf /etc/nginx/nginx.conf

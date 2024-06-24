@@ -32,7 +32,7 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile.angular
-    # command: node dist/client/server/server.mjs
+    command: node dist/client/server/server.mjs
     ports:
       - "4000:4000"
     environment:
