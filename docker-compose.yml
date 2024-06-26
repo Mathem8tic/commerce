@@ -15,6 +15,7 @@ services:
       - angular
 
   django:
+    image: mathem8tic/friends-discount-django:latest
     build:
       context: ./commerce
       dockerfile: Dockerfile.django
@@ -30,6 +31,7 @@ services:
       - redis
 
   angular:
+    image: mathem8tic/friends-discount-angular:latest
     build:
       context: ./client
       dockerfile: Dockerfile.angular
