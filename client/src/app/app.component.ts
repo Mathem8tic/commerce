@@ -72,6 +72,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.authService.authState$.subscribe((loggedIn: boolean) => {
       this.isLoggedIn = loggedIn;
     });
+
+    console.log('websocket environment: ', environment.wsUrl);
   }
 
   refreshToken() {
