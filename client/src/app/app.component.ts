@@ -76,6 +76,10 @@ export class AppComponent implements OnInit, OnDestroy {
     console.log('websocket environment: ', environment.wsUrl);
   }
 
+  log() {
+    console.log('websocket environment: ', environment.wsUrl);
+  }
+
   refreshToken() {
     this.authService.refreshToken().subscribe((res) => {});
   }
