@@ -11,8 +11,8 @@
           ><mat-icon matListItemIcon>home</mat-icon>Home</a
         >
         <a
+          *ngIf="currentUser"
           mat-list-item
-          *ngIf="isLoggedIn"
           [routerLink]="['/messages']"
           (click)="sidenav.close()"
           routerLinkActive="active"
@@ -34,7 +34,6 @@
           </div>
 
           <div class="right">
-            <button mat-button (click)="log()" >Log</button>
             <button mat-flat-button (click)="openChat()">Open Chat</button>
             <button
               mat-icon-button
@@ -46,7 +45,7 @@
             <a href="tel:7802206288" mat-icon-button
               ><mat-icon>phone</mat-icon></a
             >
-            <div *ngIf="!isLoggedIn">
+            <div *ngIf="!currentUser">
               <button
                 mat-icon-button
                 [matMenuTriggerFor]="authMenu"
@@ -55,7 +54,7 @@
                 <mat-icon>more_vert</mat-icon>
               </button>
             </div>
-            <div *ngIf="isLoggedIn">
+            <div *ngIf="currentUser">
               <button
                 mat-icon-button
                 [matMenuTriggerFor]="accountMenu"

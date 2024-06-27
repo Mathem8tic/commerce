@@ -60,19 +60,23 @@
 
       <mat-card>
         <mat-card-header>
-          <mat-card-title>Messages</mat-card-title>
+          <mat-card-title>Conversations</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <mat-list role="list">
-            <mat-list-item *ngFor="let message of user.messages">
-              <mat-icon matListItemIcon>message</mat-icon>
-              <div matListItemTitle>{{ message.title }}</div>
-              <div matListItemLine>{{ message.content }}</div>
-              <div matListItemLine class="subtitle-opacity">
-                {{ message.created_at | date : "short" }}
-              </div>
-            </mat-list-item>
-          </mat-list>
+          <mat-nav-list role="list">
+            <ng-container
+              *ngFor="let conversation of user.conversations; let l = last"
+            >
+              <mat-list-item (click)="openChat(conversation)">
+                <mat-icon matListItemIcon>forum</mat-icon>
+                <div matListItemTitle>{{ conversation.title }}</div>
+                <div matListItemLine class="subtitle-opacity">
+                  {{ conversation.created_at | date : "short" }}
+                </div>
+              </mat-list-item>
+              <!-- <mat-divider *ngIf="!l" inset></mat-divider> -->
+            </ng-container>
+          </mat-nav-list>
         </mat-card-content>
       </mat-card>
     </div>

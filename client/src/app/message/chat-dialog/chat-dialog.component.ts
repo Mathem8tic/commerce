@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
@@ -19,16 +28,16 @@ export interface ChatMessage {
   standalone: true,
   imports: [CommonModule, MatCardModule, MatListModule],
 })
-export class ChatDialogComponent  implements AfterViewInit, OnChanges, OnInit {
+export class ChatDialogComponent implements AfterViewInit, OnChanges, OnInit {
   @Input() messages$!: Observable<Message[]>;
   @Input() size: string | undefined;
   messages: Message[] = [];
-  @Input() user!: User;
+  @Input() user: User | null = null;
   @ViewChild('chatDialog') private chatDialog: ElementRef | undefined;
 
   ngOnInit() {
     this.scrollToBottom();
-    this.messages$.subscribe(messages => {
+    this.messages$.subscribe((messages) => {
       this.messages = messages;
       this.scrollToBottom();
     });

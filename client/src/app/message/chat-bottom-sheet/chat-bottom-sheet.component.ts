@@ -1,10 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
   MAT_BOTTOM_SHEET_DATA,
   MatBottomSheetModule,
@@ -20,10 +15,8 @@ import { ChatDialogComponent } from '../chat-dialog/chat-dialog.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
-import { Observable, Subscription } from 'rxjs';
-import { WebSocketService } from '../../websocket/websocket.service';
-import { User } from '../../auth/User';
 import { AuthService } from '../../auth/auth.service';
+import { ChatComponent } from '../chat/chat.component';
 
 @Component({
   selector: 'app-chat-bottom-sheet',
@@ -44,75 +37,29 @@ import { AuthService } from '../../auth/auth.service';
     MatMenuModule,
     ChatSelectorComponent,
     ChatDialogComponent,
+    ChatComponent,
   ],
 })
 export class ChatBottomSheetComponent implements OnInit, OnDestroy {
   selectedConversation: Conversation | null = null;
 
-  messageForm: FormGroup;
-  messages$: Observable<Message[]>;
-  private wsSubscription: Subscription = new Subscription();
-  private currentRoom: string | null = null;
-
-  currentUser$: Observable<User | null>;
-
-  constructor(
-    private fb: FormBuilder,
-    private messageService: MessageService,
-    private authService: AuthService,
-    private websocketService: WebSocketService,
-    private bottomSheetRef: MatBottomSheetRef<ChatBottomSheetComponent>,
-    @Inject(MAT_BOTTOM_SHEET_DATA) public data: { conversationId: string }
-  ) {
-    this.messageForm = this.fb.group({
-      content: ['', Validators.required],
-    });
-
-    this.messages$ = this.messageService.messages$;
-    this.currentUser$ = this.authService.user$;
+  get currentUser() {
+    return this.data.authService.getCurrentUser();
   }
 
-  setupSockets() {
-    if (this.selectedConversation && this.selectedConversation.id !== this.currentRoom) {
-      if (this.currentRoom) {
-        this.websocketService.disconnect(this.currentRoom); // Disconnect previous WebSocket connection
-      }
-      this.websocketService.connect(this.selectedConversation.id); // Connect to the new WebSocket
-      this.currentRoom = this.selectedConversation.id; // Update current room
-      this.wsSubscription.unsubscribe(); // Unsubscribe previous subscription if any
-      this.wsSubscription = this.websocketService.onMessage(this.currentRoom).subscribe((message: Message) => {
-        this.messageService.handleIncomingMessage(message);
-      });
-    }
+  constructor(
+    private messageService: MessageService,
+    private bottomSheetRef: MatBottomSheetRef<ChatBottomSheetComponent>,
+    @Inject(MAT_BOTTOM_SHEET_DATA)
+    public data: { authService: AuthService; conversationId: string }
+  ) {
+
   }
 
   ngOnInit(): void {
     this.messageService.selectedConversation$.subscribe((conversation) => {
       this.selectedConversation = conversation;
-      if (this.selectedConversation) {
-        this.setupSockets();
-      }
     });
-
-    this.getMessages();
-  }
-
-  getMessages(): void {
-    this.messageService.getMessages(this.data.conversationId);
-  }
-
-  sendMessage(): void {
-    const content = this.messageForm.get('content')?.value;
-
-    if (content && this.selectedConversation) {
-      const message: Message = {
-        content,
-        conversation_id: this.selectedConversation.id,
-      };
-
-      this.websocketService.sendMessage(this.selectedConversation.id, { message });
-      this.messageForm.reset();
-    }
   }
 
   close(): void {
@@ -120,15 +67,14 @@ export class ChatBottomSheetComponent implements OnInit, OnDestroy {
   }
 
   openConversationDialog(conversation?: Conversation): void {
-    this.messageService.openConversationDialog(conversation);
+    if (this.currentUser) {
+      this.messageService.openConversationDialog(
+        this.data.authService,
+        this.currentUser,
+        conversation
+      );
+    }
   }
 
-  ngOnDestroy(): void {
-    if (this.currentRoom) {
-      this.websocketService.disconnect(this.currentRoom);
-    }
-    if (this.wsSubscription) {
-      this.wsSubscription.unsubscribe();
-    }
-  }
+  ngOnDestroy(): void {}
 }

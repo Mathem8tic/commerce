@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Router, RouterModule, RouterOutlet } from '@angular/router';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { RouterModule, RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -9,17 +9,16 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { LoginDialogComponent } from './auth/login-dialog/login-dialog.component';
 import { MessageListComponent } from './message/message-list/message-list.component';
-import { RegisterDialogComponent } from './auth/register-dialog/register-dialog.component';
 import { AuthService } from './auth/auth.service';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatMenuModule } from '@angular/material/menu';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { MessageDialogComponent } from './message/message-dialog/message-dialog.component';
 import { MessageService } from './message/message.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ChatBottomSheetComponent } from './message/chat-bottom-sheet/chat-bottom-sheet.component';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../environments/environment';
+import { User } from './auth/User';
 
 @Component({
   selector: 'app-root',
@@ -43,10 +42,13 @@ import { environment } from '../environments/environment';
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'client';
-  isLoggedIn: boolean = false;
 
   mobileQuery: MediaQueryList;
   private _mobileQueryListener: () => void;
+
+  get currentUser() {
+    return this.authService.getCurrentUser()
+  }
 
   constructor(
     public dialog: MatDialog,
@@ -69,14 +71,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.authService.authState$.subscribe((loggedIn: boolean) => {
-      this.isLoggedIn = loggedIn;
+    this.authService.user$.subscribe((user: any) => {
+      console.log('user: ', user);
     });
-
-    console.log('websocket environment: ', environment.wsUrl);
-  }
-
-  log() {
+    console.log('user: ', this.authService.getCurrentUser());
     console.log('websocket environment: ', environment.wsUrl);
   }
 
@@ -107,7 +105,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const conversationId = this.cookieService.get('conversation_id');
 
     this.bottomSheet.open(ChatBottomSheetComponent, {
-      data: { conversationId }
+      data: { authService: this.authService, conversationId: conversationId }
     });
   }
 

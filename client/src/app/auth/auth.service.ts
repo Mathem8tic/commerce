@@ -4,10 +4,9 @@ import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../../environments/environment';
-import { isPlatformBrowser } from '@angular/common';
 import { RegisterDialogComponent } from './register-dialog/register-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { User } from './User'
+import { User } from './User';
 import { MessageService } from '../message/message.service';
 
 export interface AuthResponse {
@@ -34,18 +33,15 @@ interface CustomJwtPayload extends JwtPayload {
 export class AuthService {
   private apiUrl = environment.apiUrl;
 
-  private authState = new BehaviorSubject<boolean>(this.isLoggedIn());
-  public authState$ = this.authState.asObservable();
-
-  private userSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+  private userSubject: BehaviorSubject<User | null> =
+    new BehaviorSubject<User | null>(null);
   public user$ = this.userSubject.asObservable();
 
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
     private messageService: MessageService,
-    private cookieService: CookieService,
-    @Inject(PLATFORM_ID) private platformId: any
+    private cookieService: CookieService
   ) {
     const user = this.cookieService.get('user');
     if (user) {
@@ -65,7 +61,11 @@ export class AuthService {
 
   login(login: string, password: string): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(`${this.apiUrl}token/`, { login, username: login, password })
+      .post<AuthResponse>(`${this.apiUrl}token/`, {
+        login,
+        username: login,
+        password,
+      })
       .pipe(
         tap((response) => this.setSession(response)),
         catchError(this.handleError)
@@ -85,7 +85,6 @@ export class AuthService {
         tap((response) => {
           console.log('Token refreshed: ', response);
           this.setSession(response);
-          this.authState.next(true);
         }),
         catchError((error) => {
           this.logout();
@@ -99,14 +98,6 @@ export class AuthService {
     this.cookieService.delete('refresh_token', '/');
     this.cookieService.delete('user', '/');
     this.userSubject.next(null);
-    this.authState.next(false);
-  }
-
-  isLoggedIn(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
-      return !!this.cookieService.get('access_token');
-    }
-    return false;
   }
 
   getToken(): string | null {
@@ -119,7 +110,6 @@ export class AuthService {
       const decoded: CustomJwtPayload = jwtDecode<CustomJwtPayload>(token);
       return !!decoded.is_staff;
     }
-    console.log('not admin');
     return false;
   }
 
@@ -148,7 +138,6 @@ export class AuthService {
     });
   }
 
-
   private setSession(authResult: AuthResponse): void {
     const expiresIn = 60 * 120; // 1 hour
     this.cookieService.set(
@@ -165,7 +154,15 @@ export class AuthService {
     }
 
     if (authResult.user) {
-      this.cookieService.set('user', JSON.stringify(authResult.user), expiresIn, '/', undefined, true, 'Strict');
+      this.cookieService.set(
+        'user',
+        JSON.stringify(authResult.user),
+        expiresIn,
+        '/',
+        undefined,
+        true,
+        'Strict'
+      );
       this.userSubject.next(authResult.user);
     }
 

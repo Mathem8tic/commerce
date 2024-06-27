@@ -1,10 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-} from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { UserService } from '../user.service';
 import { CommonModule, isPlatformBrowser, NgIf } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -18,6 +12,10 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { Address } from '../../address/address.service';
+import { Conversation, MessageService } from '../../message/message.service';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { ChatBottomSheetComponent } from '../../message/chat-bottom-sheet/chat-bottom-sheet.component';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -44,7 +42,9 @@ export class UserProfileComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private cd: ChangeDetectorRef,
+    private messageService: MessageService,
+    private bottomSheet: MatBottomSheet,
+    private authService: AuthService,
     @Inject(PLATFORM_ID) private platformId: Object,
     private dialog: MatDialog
   ) {
@@ -66,6 +66,13 @@ export class UserProfileComponent implements OnInit {
         console.error('There was an error!', error);
         this.error = error;
       },
+    });
+  }
+
+  openChat(conversation: Conversation) {
+    this.messageService.setSelectedConversation(conversation);
+    const chatBottomSheet = this.bottomSheet.open(ChatBottomSheetComponent, {
+      data: { authService: this.authService, conversationId: conversation.id },
     });
   }
 
@@ -92,9 +99,8 @@ export class UserProfileComponent implements OnInit {
           this.user.addresses.push(result.address);
         }
 
-        this.getProfile()
+        this.getProfile();
       }
-      
     });
   }
 }

@@ -1,6 +1,15 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+} from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -17,7 +26,7 @@ import { NgIf } from '@angular/common';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDialogModule
+    MatDialogModule,
   ],
 })
 export class ConversationDialogComponent implements OnInit {
@@ -25,7 +34,7 @@ export class ConversationDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<ConversationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Conversation | null,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder
   ) {
     this.conversationForm = this.fb.group({
@@ -35,8 +44,12 @@ export class ConversationDialogComponent implements OnInit {
     });
 
     if (data) {
-      this.conversationForm.patchValue(data);
+      this.conversationForm.patchValue(data.conversation);
     }
+  }
+
+  onRemoveUser(): void {
+    this.dialogRef.close({ delete: true, userId: this.data.authService.currentUser.id });
   }
 
   ngOnInit(): void {}

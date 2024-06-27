@@ -70,6 +70,17 @@ class ConversationViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(conversations, many=True)
         return Response(serializer.data)
 
+    @action(detail=True, methods=['put'], permission_classes=[IsAuthenticated])
+    def remove_user(self, request, pk=None):
+        conversation = self.get_object()
+        user = request.user
+
+        if user in conversation.participants.all():
+            conversation.participants.remove(user)
+            return Response({'status': 'user removed'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'status': 'user not in conversation'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()

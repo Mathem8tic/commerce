@@ -15,6 +15,8 @@ import { environment } from '../../environments/environment';
 import { MessageDialogComponent } from './message-dialog/message-dialog.component';
 import { CookieService } from 'ngx-cookie-service';
 import { ConversationDialogComponent } from './conversation-dialog/conversation-dialog.component';
+import { User } from '../auth/User';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -40,15 +42,16 @@ export class MessageService {
   ) {}
 
   getMessages(conversationId: string | undefined): void {
+
     const dialogRef = this.dialog.open(LoadingDialogComponent, {
       disableClose: true,
-    });
-    console.log(conversationId, 'conversation id');
+    }); 
+
     this.http
       .get<Message[]>(`${this.apiUrl}?conversation=${conversationId}`)
       .pipe(
         catchError(this.handleError),
-        finalize(() => dialogRef.close())
+        finalize(() => { dialogRef.close()})
       )
       .subscribe((messages) => {
         this.messages.next(messages);
@@ -56,8 +59,11 @@ export class MessageService {
   }
 
   setSelectedConversation(conversation: Conversation): void {
-    this.selectedConversation.next(conversation);
-    this.getMessages(conversation.id);
+    if (this.selectedConversation.getValue()?.id !== conversation.id) {
+      this.selectedConversation.next(conversation);
+      this.cookieService.set('conversation_id', conversation.id);
+      this.getMessages(conversation.id);
+    }
   }
 
   createMessage(message: Message): Observable<Message> {
@@ -147,13 +153,19 @@ export class MessageService {
     return this.http
       .post<Conversation>(this.conversationsUrl, conversationData)
       .pipe(
-        tap(() => this.showNotification('Conversation created successfully')),
+        tap((conversation: Conversation) => {
+          this.showNotification('Conversation created successfully');
+          this.setSelectedConversation(conversation);
+        }),
         catchError(this.handleError),
         finalize(() => dialogRef.close())
       );
   }
 
-  updateConversation(id: string, conversation: Conversation): Observable<Conversation> {
+  updateConversation(
+    id: string,
+    conversation: Conversation
+  ): Observable<Conversation> {
     const dialogRef = this.dialog.open(LoadingDialogComponent, {
       disableClose: true,
     });
@@ -171,28 +183,38 @@ export class MessageService {
 
   handleIncomingMessage(message: Message) {
     const currentMessages = this.messages.getValue();
-    this.messages.next([...currentMessages, message]);
+    const messageExists = currentMessages.some((msg) => msg.id === message.id);
+    if (!messageExists) {
+      this.messages.next([...currentMessages, message]);
+    }
   }
 
-
-  openConversationDialog(conversation?: Conversation): void {
+  openConversationDialog(
+    authService: AuthService,
+    user: User,
+    conversation?: Conversation,
+  ): void {
     const dialogRef = this.dialog.open(ConversationDialogComponent, {
       width: '600px',
-      data: conversation,
+      data: { authService, conversation },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        if (conversation) {
-          this.updateConversation(conversation.id, result).subscribe(() => {
-            this.showNotification('Conversation updated');
-            this.getUserConversations();
-          });
+        if (conversation && result.delete) {
+          this.removeUserFromConversation(conversation.id, user);
         } else {
-          this.createConversation(result).subscribe(() => {
-            this.showNotification('Conversation created');
-            this.getUserConversations();
-          });
+          if (conversation) {
+            this.updateConversation(conversation.id, result).subscribe(() => {
+              this.showNotification('Conversation updated');
+              this.getUserConversations();
+            });
+          } else {
+            this.createConversation(result).subscribe(() => {
+              this.showNotification('Conversation created');
+              this.getUserConversations();
+            });
+          }
         }
       }
     });
@@ -226,6 +248,16 @@ export class MessageService {
         });
       }
     });
+  }
+
+  removeUserFromConversation(
+    conversationId: string,
+    user: User
+  ): Observable<Conversation> | boolean {
+    return this.http.put<Conversation>(
+      `${this.apiUrl}${conversationId}/remove_user/`,
+      { userId: user.id }
+    );
   }
 
   private handleError(error: HttpErrorResponse) {

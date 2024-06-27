@@ -42,12 +42,10 @@ export class LoginDialogComponent {
           response => {
             localStorage.setItem('access_token', response.access);
             localStorage.setItem('refresh_token', response.refresh);
-            this.authService['authState'].next(true)
             this.dialogRef.close();
           },
           error => {
             console.error('Login failed', error);
-            // Add error handling here
           }
         );
     }

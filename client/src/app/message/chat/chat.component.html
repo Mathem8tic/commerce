@@ -1,0 +1,20 @@
+<app-chat-selector [user]="user"></app-chat-selector>
+<app-chat-dialog [messages$]="messages$" [user]="user" [size]="size"></app-chat-dialog>
+<div class="input-container">
+  <form [formGroup]="messageForm" (ngSubmit)="sendMessage()">
+    <div class="input-row">
+      <button mat-icon-button color="primary" type="submit">
+        <mat-icon>add</mat-icon>
+      </button>
+      <textarea
+        class="chat-input"
+        placeholder="Type message here"
+        matInput
+        formControlName="content"
+      ></textarea>
+      <button mat-icon-button color="primary" type="submit">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </form>
+</div>

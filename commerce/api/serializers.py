@@ -44,10 +44,11 @@ class CreateMessageSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     addresses = AddressSerializer(many=True, read_only=True)
     messages = MessageSerializer(many=True, read_only=True)
+    conversations = ConversationSerializer(many=True, read_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'first_name', 'last_name', 'addresses', 'messages']
+        fields = ['username', 'email', 'first_name', 'last_name', 'addresses', 'messages', 'conversations']
 
 class RegisterSerializer(serializers.ModelSerializer):
     addresses = AddressSerializer(many=True, required=False)
