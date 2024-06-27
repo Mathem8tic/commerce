@@ -146,6 +146,10 @@ export class MessageService {
     );
   }
 
+  setConversations(conversations: Conversation[]): void {
+    this.conversations.next(conversations);
+  }
+
   createConversation(conversationData: string[]): Observable<Conversation> {
     const dialogRef = this.dialog.open(LoadingDialogComponent, {
       disableClose: true,

@@ -71,11 +71,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.authService.user$.subscribe((user: any) => {
-      console.log('user: ', user);
-    });
-    console.log('user: ', this.authService.getCurrentUser());
-    console.log('websocket environment: ', environment.wsUrl);
+
   }
 
   refreshToken() {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,6 +11,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '../../auth/auth.service';
 import { User } from '../../auth/User';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat-selector',
@@ -27,11 +28,12 @@ import { distinctUntilChanged } from 'rxjs/operators';
     MatDividerModule,
   ],
 })
-export class ChatSelectorComponent implements OnInit {
+export class ChatSelectorComponent implements OnInit, OnDestroy {
   @Input() authService!: AuthService;
   @Input() user: User | null = null;
   conversations: Conversation[] = [];
   conversationControl = new FormControl();
+  selectedConversationSubscription: Subscription = new Subscription();
 
   constructor(
     private messageService: MessageService,
@@ -39,18 +41,23 @@ export class ChatSelectorComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.messageService.getUserConversations();
-    // this.messageService.conversations$.subscribe((conversations) => {
-    //   this.conversations = conversations;
-    //   this.setInitialConversation();
-    // });
-
-    this.messageService.selectedConversation$.pipe(
-      distinctUntilChanged((prev, curr) => prev?.id === curr?.id)
-    ).subscribe((conversation) => {
-      console.log('selected conversation changed: ', conversation)
-      this.conversationControl.setValue(conversation);
+    this.messageService.getUserConversations();
+    this.messageService.conversations$.subscribe((conversations) => {
+      this.conversations = conversations;
+      this.setInitialConversation();
     });
+
+    this.selectedConversationSubscription =
+      this.messageService.selectedConversation$
+        .pipe(distinctUntilChanged((prev, curr) => prev?.id === curr?.id))
+        .subscribe((conversation) => {
+          console.log('selected conversation changed: ', conversation);
+          this.conversationControl.setValue(conversation);
+        });
+  }
+
+  ngOnDestroy(): void {
+    this.selectedConversationSubscription.unsubscribe();
   }
 
   setInitialConversation() {

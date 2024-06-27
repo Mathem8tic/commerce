@@ -61,6 +61,9 @@ export class UserProfileComponent implements OnInit {
     this.userService.getUserProfile().subscribe({
       next: (data) => {
         this.user = data;
+        if (this.user.conversations) {
+          this.messageService.setConversations(this.user.conversations);
+        }
       },
       error: (error) => {
         console.error('There was an error!', error);
