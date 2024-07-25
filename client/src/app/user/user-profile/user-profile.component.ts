@@ -12,10 +12,12 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { Address } from '../../address/address.service';
-import { Conversation, MessageService } from '../../message/message.service';
+import { MessageService } from '../../message/message.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ChatBottomSheetComponent } from '../../message/chat-bottom-sheet/chat-bottom-sheet.component';
 import { AuthService } from '../../auth/auth.service';
+import { ConversationService } from '../../conversation/conversation.service';
+import { Conversation } from '../../conversation/conversation';
 
 @Component({
   selector: 'app-user-profile',
@@ -43,6 +45,7 @@ export class UserProfileComponent implements OnInit {
   constructor(
     private userService: UserService,
     private messageService: MessageService,
+    private conversationService: ConversationService,
     private bottomSheet: MatBottomSheet,
     private authService: AuthService,
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -62,7 +65,7 @@ export class UserProfileComponent implements OnInit {
       next: (data) => {
         this.user = data;
         if (this.user.conversations) {
-          this.messageService.setConversations(this.user.conversations);
+          this.conversationService.setConversations(this.user.conversations);
         }
       },
       error: (error) => {
@@ -73,7 +76,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   openChat(conversation: Conversation) {
-    this.messageService.setSelectedConversation(conversation);
+    this.conversationService.setSelectedConversation(conversation);
     const chatBottomSheet = this.bottomSheet.open(ChatBottomSheetComponent, {
       data: { authService: this.authService, conversationId: conversation.id },
     });

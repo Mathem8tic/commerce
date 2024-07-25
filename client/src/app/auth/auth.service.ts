@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
 import { RegisterDialogComponent } from './register-dialog/register-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { User } from './User';
-import { MessageService } from '../message/message.service';
+import { ConversationService } from '../conversation/conversation.service';
 
 export interface AuthResponse {
   access: string;
@@ -40,7 +40,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
-    private messageService: MessageService,
+    private conversationService: ConversationService,
     private cookieService: CookieService
   ) {
     const user = this.cookieService.get('user');
@@ -97,6 +97,7 @@ export class AuthService {
     this.cookieService.delete('access_token', '/');
     this.cookieService.delete('refresh_token', '/');
     this.cookieService.delete('user', '/');
+    this.cookieService.delete('conversation_id', '/');
     this.userSubject.next(null);
   }
 
@@ -166,7 +167,7 @@ export class AuthService {
       this.userSubject.next(authResult.user);
     }
 
-    this.messageService.getUserConversations();
+    this.conversationService.getUserConversations();
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {

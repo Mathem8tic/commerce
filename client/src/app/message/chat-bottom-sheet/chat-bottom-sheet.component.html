@@ -1,4 +1,4 @@
-<div class="chat-container" *ngIf="currentUser; else noUser">
+<div class="chat-container" *ngIf="data.currentUser; else noUser">
   <mat-toolbar color="primary">
     <img
       mat-icon
@@ -26,8 +26,9 @@
     </ng-container>
   </mat-toolbar>
   <app-chat
-    [user]="currentUser"
-    [authService]="data.authService"
+    [currentUser]="data.currentUser"
+    [selectedConversation]="selectedConversation"
+    [conversations]="conversations"
     [size]="'small'"
   ></app-chat>
 </div>

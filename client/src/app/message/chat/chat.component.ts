@@ -4,13 +4,13 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  SimpleChanges,
 } from '@angular/core';
-import { Conversation, Message, MessageService } from '../message.service';
+import { MessageService } from '../message.service';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
-import { AuthService } from '../../auth/auth.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { Observable, Subscription } from 'rxjs';
@@ -25,6 +25,8 @@ import { ChatSelectorComponent } from '../chat-selector/chat-selector.component'
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { WebSocketService } from '../../websocket/websocket.service';
 import { User } from '../../auth/User';
+import { Message } from '../message';
+import { Conversation } from '../../conversation/conversation';
 
 @Component({
   selector: 'app-chat',
@@ -44,17 +46,16 @@ import { User } from '../../auth/User';
   styleUrls: ['./chat.component.sass'],
 })
 export class ChatComponent implements OnDestroy, OnInit {
-  @Input() user: User | null = null;
+  @Input() currentUser: User | null = null;
   @Input() size: string | undefined;
-  @Input() authService!: AuthService;
-  
+  @Input() conversations!: Conversation[];
+  @Input() selectedConversation!: Conversation | null;
+
   messageForm: FormGroup;
   messages$: Observable<Message[]>;
 
-  private navigationSubscription: Subscription | undefined;
   private wsSubscription: Subscription = new Subscription();
   private currentRoom: string | null = null;
-  selectedConversation: Conversation | null = null;
 
   constructor(
     private messageService: MessageService,
@@ -69,13 +70,12 @@ export class ChatComponent implements OnDestroy, OnInit {
     });
   }
 
-  ngOnInit(): void {
-    this.messageService.selectedConversation$.subscribe((conversation) => {
-      this.selectedConversation = conversation;
-      if (this.selectedConversation) {
-        this.setupSockets();
-      }
-    });
+  ngOnInit(): void {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['selectedConversation']) {
+      this.setupSockets();
+    }
   }
 
   setupSockets() {
@@ -118,7 +118,6 @@ export class ChatComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy(): void {
-    this.navigationSubscription?.unsubscribe();
     if (this.currentRoom) {
       this.websocketService.disconnect(this.currentRoom);
     }
@@ -128,6 +127,7 @@ export class ChatComponent implements OnDestroy, OnInit {
   }
 
   sendMessage(): void {
+    console.log('sending message');
     const content = this.messageForm.get('content')?.value;
 
     if (content && this.selectedConversation) {

@@ -1,5 +1,9 @@
 <div *ngIf="currentUser; else noUser">
-  <app-chat [user]="currentUser"></app-chat>
+  <app-chat
+    [currentUser]="currentUser"
+    [selectedConversation]="selectedConversation"
+    [conversations]="conversations"
+  ></app-chat>
 </div>
 
 <div class="fab">

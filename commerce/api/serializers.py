@@ -1,6 +1,6 @@
 from rest_framework import serializers
 import logging
-from .models import Message, Address, Conversation, CustomUser
+from .models import Message, Address, Conversation, CustomUser, Category, Product, Variant, UserPricing, PriceGroup
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
@@ -120,3 +120,30 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['is_staff'] = user.is_staff
         token['is_user'] = user.is_active
         return token
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+class VariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Variant
+        fields = '__all__'
+
+class ProductSerializer(serializers.ModelSerializer):
+    variants = VariantSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+class PriceGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PriceGroup
+        fields = '__all__'
+
+class UserPricingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserPricing
+        fields = '__all__'

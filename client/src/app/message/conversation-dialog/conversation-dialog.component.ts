@@ -13,8 +13,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { Conversation } from '../message.service';
-import { NgIf } from '@angular/common';
+import { JsonPipe, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-conversation-dialog',
@@ -22,6 +21,7 @@ import { NgIf } from '@angular/common';
   standalone: true,
   imports: [
     NgIf,
+    JsonPipe,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -32,12 +32,17 @@ import { NgIf } from '@angular/common';
 export class ConversationDialogComponent implements OnInit {
   conversationForm: FormGroup;
 
+  get currentUser() {
+    return this.data.authService.getCurrentUser();
+  }
+
   constructor(
     public dialogRef: MatDialogRef<ConversationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder
   ) {
     this.conversationForm = this.fb.group({
+      id: [''],
       title: ['', Validators.required],
       email_address: ['', [Validators.email]],
       phone: [''],
@@ -49,7 +54,12 @@ export class ConversationDialogComponent implements OnInit {
   }
 
   onRemoveUser(): void {
-    this.dialogRef.close({ delete: true, userId: this.data.authService.currentUser.id });
+    if (this.currentUser) {
+      this.dialogRef.close({
+        delete: true,
+        userId: this.currentUser.id,
+      });
+    }
   }
 
   ngOnInit(): void {}
@@ -60,8 +70,7 @@ export class ConversationDialogComponent implements OnInit {
 
   onSave(): void {
     if (this.conversationForm.valid) {
-      const formData = { ...this.conversationForm.value, id: this.data?.id };
-      this.dialogRef.close(formData);
+      this.dialogRef.close(this.conversationForm.value);
     }
   }
 }

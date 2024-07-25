@@ -12,7 +12,7 @@ from .filters import MessageFilter
 
 import logging
 
-from .models import Message, Address, Conversation
+from .models import Message, Address, Conversation, UserPricing, Category, PriceGroup, Product
 from .serializers import (
     RegisterSerializer,
     CustomTokenObtainPairSerializer,
@@ -21,6 +21,10 @@ from .serializers import (
     AddressSerializer,
     CreateMessageSerializer,
     MessageSerializer,
+    CategorySerializer,
+    ProductSerializer,
+    PriceGroupSerializer,
+    UserPricingSerializer
 )
 
 logger = logging.getLogger(__name__)
@@ -77,9 +81,9 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
         if user in conversation.participants.all():
             conversation.participants.remove(user)
-            return Response({'status': 'user removed'}, status=status.HTTP_200_OK)
+            return Response({'status': 'User removed'}, status=status.HTTP_200_OK)
         else:
-            return Response({'status': 'user not in conversation'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'status': 'User not in conversation'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MessageViewSet(viewsets.ModelViewSet):
@@ -180,3 +184,20 @@ class UserProfileView(APIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+    
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [AllowAny]
+    
+class PriceGroupViewSet(viewsets.ModelViewSet):
+    queryset = PriceGroup.objects.all()
+    serializer_class = PriceGroupSerializer
+    
+class UserPricingViewSet(viewsets.ModelViewSet):
+    queryset = UserPricing.objects.all()
+    serializer_class = UserPricingSerializer

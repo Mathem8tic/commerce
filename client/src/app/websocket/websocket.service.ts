@@ -3,7 +3,7 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../../environments/environment';
-import { Message } from '../message/message.service';
+import { Message } from '../message/message';
 
 @Injectable({
   providedIn: 'root',

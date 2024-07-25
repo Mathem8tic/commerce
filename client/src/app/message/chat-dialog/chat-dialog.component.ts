@@ -11,9 +11,9 @@ import {
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
-import { Message } from '../message.service';
 import { Observable } from 'rxjs';
 import { User } from '../../auth/User';
+import { Message } from '../message';
 
 export interface ChatMessage {
   username: string;
@@ -31,8 +31,9 @@ export interface ChatMessage {
 export class ChatDialogComponent implements AfterViewInit, OnChanges, OnInit {
   @Input() messages$!: Observable<Message[]>;
   @Input() size: string | undefined;
+  @Input() currentUser: User | null = null;
+  
   messages: Message[] = [];
-  @Input() user: User | null = null;
   @ViewChild('chatDialog') private chatDialog: ElementRef | undefined;
 
   ngOnInit() {

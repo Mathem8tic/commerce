@@ -1,17 +1,22 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
-import { Conversation, MessageService } from '../message.service';
-import { CookieService } from 'ngx-cookie-service';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '../../auth/auth.service';
 import { User } from '../../auth/User';
-import { distinctUntilChanged } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { ConversationService } from '../../conversation/conversation.service';
+import { Conversation } from '../../conversation/conversation';
 
 @Component({
   selector: 'app-chat-selector',
@@ -28,65 +33,43 @@ import { Subscription } from 'rxjs';
     MatDividerModule,
   ],
 })
-export class ChatSelectorComponent implements OnInit, OnDestroy {
+export class ChatSelectorComponent implements OnInit, OnChanges, OnDestroy {
   @Input() authService!: AuthService;
-  @Input() user: User | null = null;
-  conversations: Conversation[] = [];
-  conversationControl = new FormControl();
-  selectedConversationSubscription: Subscription = new Subscription();
+  @Input() currentUser: User | null = null;
+  @Input() conversations!: Conversation[];
+  @Input() selectedConversation!: Conversation | null;
 
-  constructor(
-    private messageService: MessageService,
-    private cookieService: CookieService
-  ) {}
+  conversationControl = new FormControl();
+
+  constructor(private conversationService: ConversationService) {}
 
   ngOnInit(): void {
-    this.messageService.getUserConversations();
-    this.messageService.conversations$.subscribe((conversations) => {
-      this.conversations = conversations;
-      this.setInitialConversation();
-    });
-
-    this.selectedConversationSubscription =
-      this.messageService.selectedConversation$
-        .pipe(distinctUntilChanged((prev, curr) => prev?.id === curr?.id))
-        .subscribe((conversation) => {
-          console.log('selected conversation changed: ', conversation);
-          this.conversationControl.setValue(conversation);
-        });
+    this.conversationService.getUserConversations();
   }
 
-  ngOnDestroy(): void {
-    this.selectedConversationSubscription.unsubscribe();
-  }
-
-  setInitialConversation() {
-    const conversationId = this.cookieService.get('conversation_id');
-    const selectedConversation = this.conversations.find(
-      (conversation) => conversation.id === conversationId
-    );
-
-    console.log('selectedconversation: ', selectedConversation);
-
-    if (selectedConversation) {
-      this.messageService.setSelectedConversation(selectedConversation);
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('setting in selector: ', changes['selectedConversation']);
+    if (changes['selectedConversation']) {
+      this.conversationControl.setValue(
+        changes['selectedConversation'].currentValue
+      );
     }
   }
+
+  ngOnDestroy(): void {}
 
   onConversationChange(event: MatSelectChange): void {
     if (event.value === 'new') {
       this.openConversationDialog(undefined);
     } else {
-      const selectedConversation = event.value;
-      this.messageService.setSelectedConversation(selectedConversation);
+      this.conversationService.setSelectedConversation(event.value);
     }
   }
 
   openConversationDialog(conversation: Conversation | undefined): void {
-    if (this.user) {
-      this.messageService.openConversationDialog(
-        this.authService,
-        this.user,
+    if (this.currentUser) {
+      this.conversationService.openConversationDialog(
+        this.currentUser,
         conversation
       );
     }

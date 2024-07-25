@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -17,9 +24,6 @@ import { MessageService } from './message/message.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ChatBottomSheetComponent } from './message/chat-bottom-sheet/chat-bottom-sheet.component';
 import { CookieService } from 'ngx-cookie-service';
-import { environment } from '../environments/environment';
-import { User } from './auth/User';
-
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -47,7 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private _mobileQueryListener: () => void;
 
   get currentUser() {
-    return this.authService.getCurrentUser()
+    return this.authService.getCurrentUser();
   }
 
   constructor(
@@ -70,9 +74,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
 
   refreshToken() {
     this.authService.refreshToken().subscribe((res) => {});
@@ -98,10 +100,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   openChat() {
-    const conversationId = this.cookieService.get('conversation_id');
-
     this.bottomSheet.open(ChatBottomSheetComponent, {
-      data: { authService: this.authService, conversationId: conversationId }
+      data: { currentUser: this.currentUser },
     });
   }
 

@@ -1,5 +1,13 @@
-<app-chat-selector [user]="user"></app-chat-selector>
-<app-chat-dialog [messages$]="messages$" [user]="user" [size]="size"></app-chat-dialog>
+<app-chat-selector
+  [currentUser]="currentUser"
+  [selectedConversation]="selectedConversation"
+  [conversations]="conversations"
+></app-chat-selector>
+<app-chat-dialog
+  [messages$]="messages$"
+  [currentUser]="currentUser"
+  [size]="size"
+></app-chat-dialog>
 <div class="input-container">
   <form [formGroup]="messageForm" (ngSubmit)="sendMessage()">
     <div class="input-row">

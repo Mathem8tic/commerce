@@ -1,13 +1,17 @@
 from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import MessageViewSet, RegisterView, UserProfileView, CustomTokenObtainPairView, AddressViewSet, ConversationViewSet
+from .views import MessageViewSet, RegisterView, UserProfileView, CustomTokenObtainPairView, AddressViewSet, ConversationViewSet, CategoryViewSet, ProductViewSet, PriceGroupViewSet, UserPricingViewSet
 from .consumers import ChatConsumer
 
 router = DefaultRouter()
 router.register(r'messages', MessageViewSet)
 router.register(r'addresses', AddressViewSet)
 router.register(r'conversations', ConversationViewSet)
+router.register(r'categories', CategoryViewSet)
+router.register(r'products', ProductViewSet)
+router.register(r'price_groups', PriceGroupViewSet)
+router.register(r'user_pricing', UserPricingViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -5,7 +5,8 @@ import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { Message, MessageService } from '../message.service';
+import { MessageService } from '../message.service';
+import { Message } from '../message';
 
 @Component({
   selector: 'app-message-dialog',
@@ -31,10 +32,7 @@ export class MessageDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: { message: Message }
   ) {
     this.messageForm = this.fb.group({
-      // title: [data.message ? data.message.title : '', Validators.required],
       content: [data.message ? data.message.content : '', Validators.required],
-      // email_address: [data.message?.email_address ? data.message.email_address : '', [Validators.required, Validators.email]],
-      // phone: [data.message?.phone ? data.message.phone: '', Validators.required]
     });
   }
 

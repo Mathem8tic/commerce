@@ -4,8 +4,8 @@
       <mat-card
         class="message-card"
         [ngClass]="{
-          sent: message.username === user?.username,
-          received: message.username !== user?.username,
+          sent: message.username === currentUser?.username,
+          received: message.username !== currentUser?.username,
           size
         }"
       >
