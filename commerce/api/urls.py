@@ -2,6 +2,7 @@ from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import MessageViewSet, RegisterView, UserProfileView, CustomTokenObtainPairView, AddressViewSet, ConversationViewSet, CategoryViewSet, ProductViewSet, PriceGroupViewSet, UserPricingViewSet, ProductListView
+
 from .consumers import ChatConsumer
 
 router = DefaultRouter()

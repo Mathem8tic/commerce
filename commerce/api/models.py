@@ -12,6 +12,8 @@ class BaseModel(models.Model):
 class CustomUser(AbstractUser, BaseModel):
     pass
 
+User = get_user_model()
+
 class Conversation(BaseModel):
     participants = models.ManyToManyField(CustomUser, related_name='conversations')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -80,8 +82,6 @@ class PriceGroup(models.Model):
 
     def __str__(self):
         return self.title
-
-User = get_user_model()
 
 class UserPricing(models.Model):
     user = models.ForeignKey(User, related_name='pricing', on_delete=models.CASCADE)
