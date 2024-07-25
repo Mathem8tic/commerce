@@ -1,7 +1,7 @@
 from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import MessageViewSet, RegisterView, UserProfileView, CustomTokenObtainPairView, AddressViewSet, ConversationViewSet, CategoryViewSet, ProductViewSet, PriceGroupViewSet, UserPricingViewSet
+from .views import MessageViewSet, RegisterView, UserProfileView, CustomTokenObtainPairView, AddressViewSet, ConversationViewSet, CategoryViewSet, ProductViewSet, PriceGroupViewSet, UserPricingViewSet, ProductListView
 from .consumers import ChatConsumer
 
 router = DefaultRouter()
@@ -19,6 +19,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', RegisterView.as_view(), name='register'),
     path('profile/', UserProfileView.as_view(), name='user-profile'),
+    path('products/', ProductListView.as_view(), name='product-list'),
 ]
 
 websocket_urlpatterns = [

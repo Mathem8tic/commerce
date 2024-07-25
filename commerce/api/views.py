@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.core.mail import send_mail
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import PermissionDenied
+from rest_framework import generics
 from .filters import MessageFilter
 
 import logging
@@ -201,3 +202,8 @@ class PriceGroupViewSet(viewsets.ModelViewSet):
 class UserPricingViewSet(viewsets.ModelViewSet):
     queryset = UserPricing.objects.all()
     serializer_class = UserPricingSerializer
+
+class ProductListView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [AllowAny]
